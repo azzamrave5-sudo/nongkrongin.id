@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="warm-coffee">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>nongkrongin.id — Cari Kafe Aesthetic & Nugas Tanpa Ribet (Coffee Edition)</title>
+  
+  <!-- Leaflet CSS & JS for Interactive Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Outfit for Coffee Aesthetic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+:root {
+  --bg-main: #fdfbf7;
+  --bg-card: #ffffff;
+  --bg-surface: #f5ebe0;
+  --text-main: #2b1e16;
+  --text-muted: #785942;
+  --brand-primary: #8b4513;
+  --brand-hover: #522b00;
+  --brand-light: #ede0d4;
+  --accent-gold: #d97706;
+  --accent-gold-bg: #fef3c7;
+  --border-color: #e6ccb2;
+  --shadow-sm: 0 4px 12px rgba(67, 40, 24, 0.06);
+  --shadow-md: 0 8px 24px rgba(67, 40, 24, 0.12);
+  --shadow-lg: 0 16px 32px rgba(67, 40, 24, 0.18);
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-pill: 999px;
+  --nav-height: 68px;
+  --bottom-nav-height: 64px;
+}
+
+[data-theme="dark-mocha"] {
+  --bg-main: #18110c;
+  --bg-card: #241a14;
+  --bg-surface: #36271e;
+  --text-main: #f7ebe1;
+  --text-muted: #c4a994;
+  --brand-primary: #d08851;
+  --brand-hover: #e09f6a;
+  --brand-light: #362419;
+  --accent-gold: #f59e0b;
+  --accent-gold-bg: #451a03;
+  --border-color: #4a3427;
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+
+body { 
+  background: linear-gradient(180deg, #f5ebe0 0%, #fdfbf7 380px, var(--bg-main) 100%);
+  background-attachment: fixed;
+  color: var(--text-main); 
+  padding-top: calc(var(--nav-height) + 56px); 
+  padding-bottom: calc(var(--bottom-nav-height) + 20px); 
+  transition: background-color 0.3s ease, color 0.3s ease; 
+}
+
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-height);
+  background: rgba(253, 251, 247, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  transition: all 0.3s ease;
+}
+
+[data-theme="dark-mocha"] .navbar {
+  background: rgba(24, 17, 12, 0.92);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--brand-primary);
+  letter-spacing: -0.4px;
+}
+
+.nav-brand .logo-icon {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, #7b3f00, #b05b12);
+  color: #fff;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 12px rgba(123, 63, 0, 0.3);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-surface);
+  padding: 5px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-color);
+}
+
+.nav-link-btn {
+  background: transparent;
+  border: none;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.nav-link-btn:hover {
+  color: var(--text-main);
+  background: rgba(139, 69, 19, 0.08);
+}
+
+.nav-link-btn.active {
+  background: linear-gradient(135deg, #7b3f00, #8b4513);
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(123, 63, 0, 0.35);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.action-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-pill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+  font-size: 1.1rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+  transform: translateY(-2px);
+}
+
+.badge-count {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: #dc2626;
+  color: white;
+  font-size: 0.68rem;
+  font-weight: 800;
+  height: 18px;
+  min-width: 18px;
+  border-radius: var(--radius-pill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid var(--bg-card);
+}
+
+.badge-subnav {
+  background: rgba(253, 251, 247, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  z-index: 1090;
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+  box-shadow: 0 4px 12px rgba(67, 40, 24, 0.05);
+}
+
+.badge-subnav::-webkit-scrollbar { display: none; }
+
+[data-theme="dark-mocha"] .badge-subnav {
+  background: rgba(24, 17, 12, 0.95);
+}
+
+.badge-subnav-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--brand-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 8px;
+  border-right: 2px solid var(--border-color);
+}
+
+.drink-badge-pill {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+}
+
+.drink-badge-pill:hover {
+  transform: translateY(-2px);
+  border-color: var(--brand-primary);
+  color: var(--text-main);
+}
+
+.drink-badge-pill.unlocked {
+  border-color: #d08851;
+  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(208, 136, 81, 0.15) 100%);
+  color: var(--text-main);
+}
+
+.drink-badge-pill.equipped {
+  background: linear-gradient(135deg, #7b3f00 0%, #4a2602 100%);
+  color: #fff !important;
+  border-color: #7b3f00;
+  box-shadow: 0 4px 12px rgba(123, 63, 0, 0.35);
+}
+
+.drink-badge-pill.locked {
+  opacity: 0.65;
+  border-style: dashed;
+}
+
+.level-tag-mini {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  margin-left: 2px;
+}
+
+.level-tag-beginner { background: #e0f2fe; color: #0369a1; }
+.level-tag-pro { background: #fef3c7; color: #b45309; }
+.level-tag-expert { background: #dcfce7; color: #15803d; }
+
+.page {
+  display: none;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 24px 20px;
+  animation: fadeInPage 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.page.active { display: block; }
+
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-header { margin-bottom: 24px; }
+
+.page-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: -0.5px;
+}
+
+.page-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-top: 4px;
+}
+
+.hero-banner {
+  background: linear-gradient(135deg, #4a2810 0%, #7b3f00 50%, #2b1708 100%);
+  color: white;
+  border-radius: var(--radius-lg);
+  padding: 36px 30px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(230, 204, 178, 0.2);
+}
+
+.hero-banner::after {
+  content: '\f0f4';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  position: absolute;
+  right: -20px;
+  bottom: -30px;
+  font-size: 12rem;
+  opacity: 0.08;
+  color: #fff;
+  pointer-events: none;
+}
+
+.hero-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.95rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
+}
+
+.hero-desc {
+  font-size: 0.98rem;
+  opacity: 0.92;
+  margin-bottom: 22px;
+  max-width: 620px;
+  line-height: 1.5;
+}
+
+.search-box {
+  background: white;
+  border-radius: var(--radius-pill);
+  padding: 6px 8px 6px 20px;
+  display: flex;
+  align-items: center;
+  max-width: 580px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 0.95rem;
+  color: #2b1e16;
+  background: transparent;
+}
+
+.search-box button {
+  background: linear-gradient(135deg, #7b3f00, #a0522d);
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.search-box button:hover { background: var(--brand-hover); }
+
+.quick-tags {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+  scrollbar-width: none;
+}
+.quick-tags::-webkit-scrollbar { display: none; }
+
+.tag-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.tag-btn.active {
+  background: linear-gradient(135deg, #7b3f00, #8b4513);
+  color: white;
+  border-color: #7b3f00;
+  box-shadow: 0 4px 12px rgba(123, 63, 0, 0.3);
+}
+
+.cafe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 20px;
+}
+
+.cafe-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.cafe-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--brand-primary);
+}
+
+.card-img-wrapper {
+  position: relative;
+  height: 190px;
+  overflow: hidden;
+}
+
+.card-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.cafe-card:hover .card-img-wrapper img { transform: scale(1.05); }
+
+.wish-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  border: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.wish-icon.active { color: #dc2626; background: #ffffff; }
+
+.area-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(43, 30, 22, 0.88);
+  backdrop-filter: blur(6px);
+  color: #f5ebe0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cafe-info {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.cafe-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-main);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.rating-badge {
+  background: var(--accent-gold-bg);
+  color: var(--accent-gold);
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.cafe-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.crowd-status {
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bg-sepi { background: #dcfce7; color: #15803d; }
+.bg-sedang { background: #fef9c3; color: #a16207; }
+.bg-ramai { background: #ffedd5; color: #c2410c; }
+
+[data-theme="dark-mocha"] .bg-sepi { background: #052e16; color: #4ade80; }
+[data-theme="dark-mocha"] .bg-sedang { background: #422006; color: #facc15; }
+[data-theme="dark-mocha"] .bg-ramai { background: #431407; color: #fb923c; }
+
+.cafe-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-color);
+}
+
+.mini-tag {
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+#map {
+  width: 100%;
+  height: 65vh;
+  min-height: 400px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  z-index: 1;
+}
+
+.map-page-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+}
+
+.map-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 65vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.map-sidebar-card {
+  background: var(--bg-card);
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.map-sidebar-card:hover {
+  border-color: var(--brand-primary);
+  background: var(--bg-surface);
+}
+
+.map-sidebar-card img {
+  width: 70px;
+  height: 70px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+}
+
+.user-profile-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f5ebe0 100%);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="dark-mocha"] .user-profile-card {
+  background: linear-gradient(135deg, #241a14 0%, #18110c 100%);
+}
+
+.avatar-wrapper {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7b3f00, #a0522d);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  box-shadow: 0 6px 16px rgba(123, 63, 0, 0.35);
+  flex-shrink: 0;
+}
+
+.user-title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--brand-light);
+  color: var(--brand-primary);
+  border: 1px solid var(--border-color);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+.xp-progress-bar {
+  width: 100%;
+  height: 10px;
+  background: rgba(123, 63, 0, 0.15);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.xp-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #d08851, #7b3f00);
+  border-radius: var(--radius-pill);
+  transition: width 0.4s ease;
+}
+
+/* Tiered Level Badge Section */
+.achievement-card-tiered {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.achievement-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.achievement-icon-wrapper {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--brand-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.level-tiers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.tier-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.tier-item.unlocked {
+  border-color: #d08851;
+  background: linear-gradient(90deg, var(--bg-card) 0%, rgba(245, 235, 224, 0.8) 100%);
+}
+
+.tier-item.locked {
+  opacity: 0.65;
+}
+
+.equip-btn {
+  background: var(--brand-primary);
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.equip-btn.active {
+  background: #10b981;
+  color: white;
+}
+
+.toast-container {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.achievement-toast {
+  background: #2b1e16;
+  color: white;
+  border: 2px solid #d08851;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+  max-width: 350px;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: var(--bottom-nav-height);
+  background: rgba(253, 251, 247, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border-color);
+  z-index: 1100;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 8px;
+}
+
+[data-theme="dark-mocha"] .bottom-nav {
+  background: rgba(24, 17, 12, 0.92);
+}
+
+.bottom-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 20%;
+  padding: 6px 0;
+  transition: all 0.2s ease;
+}
+
+.bottom-item i { font-size: 1.25rem; }
+.bottom-item.active { color: var(--brand-primary); }
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 30, 22, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.active {
+  display: flex;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-box {
+  background: var(--bg-card);
+  width: 100%;
+  max-width: 640px;
+  border-radius: var(--radius-lg);
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+.modal-header-img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.modal-content { padding: 24px; }
+
+@media (max-width: 868px) {
+  .nav-links { display: none; }
+  .bottom-nav { display: flex; }
+  .map-page-wrapper { grid-template-columns: 1fr; }
+  .map-sidebar { max-height: 300px; }
+}
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <a href="#" class="nav-brand" onclick="switchTab('home')">
+      <div class="logo-icon"><i class="fas fa-mug-hot"></i></div>
+      <span>nongkrongin.id</span>
+      <span class="user-title-badge" id="navTitleBadge" style="margin-left:6px; font-size:0.75rem;">
+        <i class="fas fa-certificate"></i> 🍵 Matcha Beginner
+      </span>
+    </a>
+
+    <!-- Desktop Navigation Links -->
+    <nav class="nav-links">
+      <button class="nav-link-btn active" data-tab="home" onclick="switchTab('home')">
+        <i class="fas fa-compass"></i> Jelajah
+      </button>
+      <button class="nav-link-btn" data-tab="map" onclick="switchTab('map')">
+        <i class="fas fa-map-marked-alt"></i> Peta Cafe
+      </button>
+      <button class="nav-link-btn" data-tab="gallery" onclick="switchTab('gallery')">
+        <i class="fas fa-camera-retro"></i> Galeri Spot
+      </button>
+      <button class="nav-link-btn" data-tab="recommend" onclick="switchTab('recommend')">
+        <i class="fas fa-star"></i> Rekomendasi
+      </button>
+      <button class="nav-link-btn" data-tab="wishlist" onclick="switchTab('wishlist')">
+        <i class="fas fa-bookmark"></i> Tersimpan
+      </button>
+      <button class="nav-link-btn" data-tab="achievements" onclick="switchTab('achievements')">
+        <i class="fas fa-award"></i> Level & Julukan
+      </button>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="nav-actions">
+      <button class="action-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Ganti Tema Kopi">
+        <i class="fas fa-moon"></i>
+      </button>
+      <button class="action-btn" onclick="switchTab('wishlist')" title="Wishlist Cafe">
+        <i class="fas fa-heart" style="color: #dc2626;"></i>
+        <span class="badge-count" id="wishlistBadge">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Drink Badge Showcase Sub-Navbar -->
+  <div class="badge-subnav" id="badgeSubnav">
+    <div class="badge-subnav-title">
+      <i class="fas fa-award"></i> Level Badges
+    </div>
+    <div id="badgeSubnavItems" style="display:flex; gap:8px;"></div>
+  </div>
+
+  <main id="page-home" class="page active">
+    <section class="hero-banner">
+      <h1 class="hero-title">Nongkrong & Nugas Jadi Lebih Seru di Malang</h1>
+      <p class="hero-desc">Temukan kafe pilihan dengan aroma kopi terbaik, info realtime Wi-Fi, colokan, dan level up julukan penjelajahmu!</p>
+      
+      <div class="search-box">
+        <i class="fas fa-search" style="color:#7b3f00; margin-right: 10px;"></i>
+        <input type="text" id="searchInput" placeholder="Cari nama kafe, lokasi (Suhat, UB, Ijen), atau varian kopi..." onkeyup="handleSearch()">
+        <button onclick="handleSearch()"><i class="fas fa-filter"></i> Cari</button>
+      </div>
+    </section>
+
+    <!-- Category Quick Filters -->
+    <div class="quick-tags">
+      <button class="tag-btn active" onclick="filterCategory('all', this)"><i class="fas fa-border-all"></i> Semua Kafe</button>
+      <button class="tag-btn" onclick="filterCategory('sepi', this)"><i class="fas fa-leaf"></i> Sepi & Quiet Zone</button>
+      <button class="tag-btn" onclick="filterCategory('formal', this)"><i class="fas fa-laptop-code"></i> Nugas & Kerja</button>
+      <button class="tag-btn" onclick="filterCategory('modern', this)"><i class="fas fa-camera"></i> Aesthetic & Rooftop</button>
+      <button class="tag-btn" onclick="filterCategory('24jam', this)"><i class="fas fa-clock"></i> Buka 24 Jam</button>
+    </div>
+
+    <!-- Cafe Grid -->
+    <div class="cafe-grid" id="cafeGrid"></div>
+  </main>
+
+  <section id="page-map" class="page">
+    <div class="page-header">
+      <h2 class="page-title"><i class="fas fa-map-marked-alt" style="color:var(--brand-primary)"></i> Peta nongkrongin.id Malang</h2>
+      <p class="page-subtitle">Pilih pin kafe di peta untuk melihat lokasi presisi dan rute dari kampus.</p>
+    </div>
+
+    <div class="map-page-wrapper">
+      <div id="map"></div>
+      <div class="map-sidebar" id="mapSidebarList"></div>
+    </div>
+  </section>
+
+  <section id="page-gallery" class="page">
+    <div class="page-header">
+      <h2 class="page-title"><i class="fas fa-camera-retro" style="color:var(--brand-primary)"></i> Galeri Spot Photo Aesthetic</h2>
+      <p class="page-subtitle">Spot-spot favorit anak muda Malang buat bahan story dan feeds Instagram.</p>
+    </div>
+
+    <div class="gallery-grid" id="galleryGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:16px;"></div>
+  </section>
+
+  <section id="page-recommend" class="page">
+    <div class="page-header">
+      <h2 class="page-title"><i class="fas fa-award" style="color:var(--brand-primary)"></i> Rekomendasi Tempat Nugas</h2>
+      <p class="page-subtitle">Kafe ber-WiFi kencang dengan Quiet Zone dan fasilitas colokan lengkap.</p>
+    </div>
+
+    <div id="recommendList"></div>
+  </section>
+
+  <section id="page-wishlist" class="page">
+    <div class="page-header">
+      <h2 class="page-title"><i class="fas fa-heart" style="color:#dc2626"></i> Kafe Favorit Tersimpan</h2>
+      <p class="page-subtitle">Daftar kafe yang telah kamu simpan untuk dikunjungi nanti.</p>
+    </div>
+
+    <div class="cafe-grid" id="wishlistGrid"></div>
+  </section>
+
+  <section id="page-achievements" class="page">
+    <div class="page-header">
+      <h2 class="page-title"><i class="fas fa-award" style="color:var(--brand-primary)"></i> Level Misi & Julukan Profil</h2>
+      <p class="page-subtitle">Selesaikan misi dari tingkat <b>Beginner</b>, <b>Pro</b>, hingga <b>Expert</b> untuk membuka julukan paling legendaris!</p>
+    </div>
+
+    <div class="user-profile-card">
+      <div class="avatar-wrapper">
+        <i class="fas fa-user-astronaut"></i>
+      </div>
+      <div style="flex:1;">
+        <div style="display:flex; justify-style:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div>
+            <h3 style="font-size:1.25rem; font-weight:800; color:var(--text-main);" id="userRankTitle">Level 1 — Penjelajah Nongkrong</h3>
+            <span class="user-title-badge" id="profileEquippedTitle"><i class="fas fa-tag"></i> 🍵 Matcha Beginner</span>
+          </div>
+          <span style="font-size:0.85rem; font-weight:800; color:var(--brand-primary);" id="totalXpDisplay">0 / 200 XP</span>
+        </div>
+
+        <div class="xp-progress-bar">
+          <div class="xp-progress-fill" id="xpProgressFill" style="width: 0%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tieredAchievementsContainer" style="display:flex; flex-direction:column; gap:20px;"></div>
+  </section>
+
+  <nav class="bottom-nav">
+    <button class="bottom-item active" data-tab="home" onclick="switchTab('home')">
+      <i class="fas fa-compass"></i>
+      <span>Jelajah</span>
+    </button>
+    <button class="bottom-item" data-tab="map" onclick="switchTab('map')">
+      <i class="fas fa-map-pin"></i>
+      <span>Peta</span>
+    </button>
+    <button class="bottom-item" data-tab="gallery" onclick="switchTab('gallery')">
+      <i class="fas fa-camera"></i>
+      <span>Galeri</span>
+    </button>
+    <button class="bottom-item" data-tab="achievements" onclick="switchTab('achievements')">
+      <i class="fas fa-award"></i>
+      <span>Level</span>
+    </button>
+    <button class="bottom-item" data-tab="wishlist" onclick="switchTab('wishlist')">
+      <i class="fas fa-bookmark"></i>
+      <span>Saved</span>
+    </button>
+  </nav>
+
+  <!-- Realtime Toast Notifications -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const cafesData = [
+      { 
+        id: 1, 
+        name: "Academic Coffee & Space", 
+        area: "Lowokwaru (UB)",
+        lat: -7.9526, 
+        lng: 112.6144, 
+        category: "formal", 
+        crowd: "sedang", 
+        rating: 4.8, 
+        price: "Rp 20rb - 45rb", 
+        is24h: true,
+        wifi: "120 Mbps",
+        img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600", 
+        tags: ["WiFi Kencang", "Quiet Zone", "Buka 24 Jam", "Matcha", "Americano", "Double Shot"],
+        desc: "Konsep kafe akademis dengan pencahayaan hangat, matcha artisan pilihan, double shot espresso penahan kantuk, serta area belajar bebas bising."
+      },
+      { 
+        id: 2, 
+        name: "Minimalist Brew Studio", 
+        area: "Soekarno Hatta (Suhat)",
+        lat: -7.9422, 
+        lng: 112.6227, 
+        category: "modern", 
+        crowd: "ramai", 
+        rating: 4.9, 
+        price: "Rp 25rb - 60rb", 
+        is24h: false,
+        wifi: "80 Mbps",
+        img: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600", 
+        tags: ["Aesthetic", "Outdoor Garden", "Latte", "Matcha"],
+        desc: "Destinasi populer anak muda Malang. Desain monokrom industrial dengan spesialisasi Latte Art estetik dan matcha impor berkualitas tinggi."
+      },
+      { 
+        id: 3, 
+        name: "Kopi Heritage Klojen", 
+        area: "Klojen (Pusat Kota)",
+        lat: -7.9785, 
+        lng: 112.6315, 
+        category: "formal", 
+        crowd: "sepi", 
+        rating: 4.6, 
+        price: "Rp 15rb - 35rb", 
+        is24h: false,
+        wifi: "50 Mbps",
+        img: "https://images.unsplash.com/photo-1445116572660-23209b471647?w=600", 
+        tags: ["Klasik Vintage", "Americano", "Tenang"],
+        desc: "Nuansa nostalgia rumah kolonial Jawa. Tempat favorit penikmat Americano murni dan kopi tubruk tradisional tanpa gula."
+      },
+      { 
+        id: 4, 
+        name: "Cloud Nine Sky Cafe", 
+        area: "Ijen Boulevard",
+        lat: -7.9705, 
+        lng: 112.6240, 
+        category: "modern", 
+        crowd: "ramai", 
+        rating: 4.7, 
+        price: "Rp 30rb - 75rb", 
+        is24h: true,
+        wifi: "90 Mbps",
+        img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600", 
+        tags: ["Rooftop Sunset", "Latte", "Double Shot", "Buka 24 Jam"],
+        desc: "Kafe rooftop dengan pemandangan kota Malang. Buka 24 jam dengan menu andalan Iced Spanish Latte dan Double Shot Espresso penolong tugas semalam."
+      },
+      { 
+        id: 5, 
+        name: "Kaktus Work & Workspace", 
+        area: "Dau / Malang Barat",
+        lat: -7.9388, 
+        lng: 112.5932, 
+        category: "formal", 
+        crowd: "sepi", 
+        rating: 4.8, 
+        price: "Rp 22rb - 50rb", 
+        is24h: true,
+        wifi: "150 Mbps",
+        img: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600", 
+        tags: ["Private Meeting", "Americano", "Double Shot", "Buka 24 Jam"],
+        desc: "Dilengkapi kursi ergonomis, fasilitas printing, serta menu kopi dosis tinggi seperti Americano & Double Shot Espresso khusus maraton skripsi."
+      },
+      { 
+        id: 6, 
+        name: "Sejiwa Coffee Malang", 
+        area: "Rampal Celaket",
+        lat: -7.9650, 
+        lng: 112.6350, 
+        category: "modern", 
+        crowd: "sedang", 
+        rating: 4.8, 
+        price: "Rp 28rb - 65rb", 
+        is24h: false,
+        wifi: "100 Mbps",
+        img: "https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=600", 
+        tags: ["Aesthetic", "Latte", "Matcha", "Spacious"],
+        desc: "Bangunan kaca modern dengan suasana asri. Menyediakan Latte berkualitas premium serta varian Matcha organik yang lembut di lidah."
+      },
+      { 
+        id: 7, 
+        name: "Crita Kopi & Workspace", 
+        area: "Dinoyo (UM/UB)",
+        lat: -7.9480, 
+        lng: 112.6080, 
+        category: "formal", 
+        crowd: "sepi", 
+        rating: 4.7, 
+        price: "Rp 18rb - 40rb", 
+        is24h: true,
+        wifi: "110 Mbps",
+        img: "https://images.unsplash.com/photo-1498804103079-a6351b050096?w=600", 
+        tags: ["Quiet Zone", "Double Shot", "Matcha", "Buka 24 Jam"],
+        desc: "Spot nongkrong & nugas favorit mahasiswa. Menyediakan booster kafein Double Shot dan Matcha Latte seimbang."
+      },
+      { 
+        id: 8, 
+        name: "Robucca Malang", 
+        area: "Ijen / Tidar",
+        lat: -7.9620, 
+        lng: 112.6100, 
+        category: "modern", 
+        crowd: "ramai", 
+        rating: 4.9, 
+        price: "Rp 30rb - 70rb", 
+        is24h: false,
+        wifi: "95 Mbps",
+        img: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=600", 
+        tags: ["Aesthetic", "Japanese Style", "Matcha", "Latte"],
+        desc: "Sentuhan arsitektur Zen Jepang modern. Matcha pilihan diimpor dari Uji, Jepang dan disajikan secara tradisional."
+      },
+      { 
+        id: 9, 
+        name: "LABORE Coffee & Eatery", 
+        area: "Soekarno Hatta (Suhat)",
+        lat: -7.9390, 
+        lng: 112.6200, 
+        category: "formal", 
+        crowd: "sedang", 
+        rating: 4.7, 
+        price: "Rp 25rb - 55rb", 
+        is24h: false,
+        wifi: "85 Mbps",
+        img: "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=600", 
+        tags: ["Cozy Spot", "Americano", "Latte", "Quiet Zone"],
+        desc: "Ruang kerja luas bernuansa kayu minimalis. Biji kopi roast medium yang menghasilkan Latte & Americano kaya rasa."
+      },
+      { 
+        id: 10, 
+        name: "Bureau Coffee & Co", 
+        area: "Sudimoro",
+        lat: -7.9310, 
+        lng: 112.6280, 
+        category: "modern", 
+        crowd: "ramai", 
+        rating: 4.8, 
+        price: "Rp 20rb - 48rb", 
+        is24h: true,
+        wifi: "100 Mbps",
+        img: "https://images.unsplash.com/photo-1508766917616-d22f3f1eea14?w=600", 
+        tags: ["Outdoor Vibe", "Americano", "Double Shot", "Buka 24 Jam"],
+        desc: "Kawasan nongkrong Sudimoro paling ramai. Tempat pas menikmati Americano dingin atau Double Shot Espresso saat begadang."
+      }
+    ];
+
+    const badgeCategories = [
+      {
+        id: "matcha_lover",
+        title: "Matcha Lovers",
+        icon: "fa-leaf",
+        key: "matcha_views",
+        tiers: [
+          { level: "Beginner", target: 2, title: "🍵 Matcha Beginner", xp: 50, desc: "Buka detail 2 kafe ber-menu Matcha." },
+          { level: "Pro", target: 5, title: "🍵 Matcha Sommelier", xp: 120, desc: "Buka detail 5 kafe spesialis Matcha artisan." },
+          { level: "Expert", target: 8, title: "🍵 Matcha Grandmaster", xp: 250, desc: "Jelajahi 8 kafe penikmat Matcha sejati di Malang." }
+        ]
+      },
+      {
+        id: "americano_lover",
+        title: "Americano Lovers",
+        icon: "fa-coffee",
+        key: "americano_views",
+        tiers: [
+          { level: "Beginner", target: 2, title: "☕ Americano Beginner", xp: 50, desc: "Cek detail 2 kafe dengan menu Kopi Hitam Murni." },
+          { level: "Pro", target: 5, title: "☕ Black Coffee Enthusiast", xp: 120, desc: "Telusuri 5 kafe penyaji Americano terbaik." },
+          { level: "Expert", target: 8, title: "☕ Americano Purist Expert", xp: 250, desc: "Telusuri 8 kafe penikmat kopi tanpa gula." }
+        ]
+      },
+      {
+        id: "latte_lover",
+        title: "Latte Lovers",
+        icon: "fa-glass-whiskey",
+        key: "latte_views",
+        tiers: [
+          { level: "Beginner", target: 2, title: "🥛 Latte Beginner", xp: 50, desc: "Cek detail 2 kafe dengan varian Latte Art." },
+          { level: "Pro", target: 5, title: "🥛 Foam & Latte Artisan", xp: 120, desc: "Jelajahi 5 kafe spesialis Cafe Latte & Spanish Latte." },
+          { level: "Expert", target: 8, title: "🥛 Latte Art Maestro", xp: 250, desc: "Jelajahi 8 kafe ber-barista profesional di Malang." }
+        ]
+      },
+      {
+        id: "double_shot_depression",
+        title: 'Double Shot "Depression"',
+        icon: "fa-bolt",
+        key: "double_shot_views",
+        tiers: [
+          { level: "Beginner", target: 2, title: '⚡ Caffeine Rookie', xp: 50, desc: "Buka detail 2 kafe penyedia ekstra espresso penahan kantuk." },
+          { level: "Pro", target: 5, title: '⚡ Deadline Survivor', xp: 150, desc: "Cek detail 5 kafe 24 jam penolong kejar deadline." },
+          { level: "Expert", target: 8, title: '⚡ Insomnia Legend', xp: 300, desc: "Kuasai 8 kafe dosis kafein tinggi Malang!" }
+        ]
+      },
+      {
+        id: "nugas_warrior",
+        title: "Nugas Warrior",
+        icon: "fa-laptop-code",
+        key: "nugas_views",
+        tiers: [
+          { level: "Beginner", target: 2, title: "💻 Skripsi Newbie", xp: 50, desc: "Cek detail 2 kafe kategori Nugas & Quiet Zone." },
+          { level: "Pro", target: 5, title: "💻 Tugas Akhir Fighter", xp: 120, desc: "Kunjungi 5 kafe berfasilitas Wi-Fi kencang & colokan." },
+          { level: "Expert", target: 8, title: "💻 Nugas Grandmaster", xp: 250, desc: "Temukan 8 spot nugas terbaik Malang." }
+        ]
+      },
+      {
+        id: "malang_explorer",
+        title: "Malang Explorer",
+        icon: "fa-map-marked-alt",
+        key: "map_pins",
+        tiers: [
+          { level: "Beginner", target: 3, title: "📍 Malang Tourist", xp: 50, desc: "Klik 3 pin lokasi kafe di peta nongkrongin.id." },
+          { level: "Pro", target: 6, title: "📍 Malang Navigator", xp: 120, desc: "Klik 6 pin kafe di peta." },
+          { level: "Expert", target: 10, title: "📍 Malang Local Sepuh", xp: 250, desc: "Klik 10 pin kafe di seluruh pelosok Malang." }
+        ]
+      },
+      {
+        id: "cafe_collector",
+        title: "Cafe Collector",
+        icon: "fa-bookmark",
+        key: "wishlist_count",
+        tiers: [
+          { level: "Beginner", target: 2, title: "❤️ Bookmark Newbie", xp: 50, desc: "Simpan 2 kafe ke daftar Wishlist tersimpan." },
+          { level: "Pro", target: 5, title: "❤️ Cafe Curator", xp: 120, desc: "Simpan 5 kafe ke daftar Wishlist." },
+          { level: "Expert", target: 8, title: "❤️ Ultimate Collector", xp: 250, desc: "Simpan 8 kafe favorit ke daftar tersimpan." }
+        ]
+      }
+    ];
+
+    let userStats = JSON.parse(localStorage.getItem('nongkrongin_user_stats') || JSON.stringify({
+      xp: 0,
+      equippedTitle: "🍵 Matcha Beginner",
+      matcha_views: 0,
+      americano_views: 0,
+      latte_views: 0,
+      double_shot_views: 0,
+      nugas_views: 0,
+      map_pins: 0,
+      wishlist_count: 0,
+      filter_24h: 0,
+      unlockedTiers: []
+    }));
+
+    let wishlist = JSON.parse(localStorage.getItem('nongkrongin_wishlist') || '[]');
+    let mapInstance = null;
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-link-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.bottom-item').forEach(b => b.classList.remove('active'));
+
+      const targetPage = document.getElementById('page-' + tabId);
+      if (targetPage) targetPage.classList.add('active');
+
+      document.querySelectorAll(`[data-tab="${tabId}"]`).forEach(b => b.classList.add('active'));
+
+      if (tabId === 'map') {
+        setTimeout(() => {
+          if (!mapInstance) {
+            initMap();
+          } else {
+            mapInstance.invalidateSize();
+          }
+        }, 100);
+      } else if (tabId === 'gallery') {
+        renderGallery();
+      } else if (tabId === 'recommend') {
+        renderRecommendations();
+      } else if (tabId === 'wishlist') {
+        renderWishlist();
+      } else if (tabId === 'achievements') {
+        renderTieredAchievements();
+      }
+    }
+
+    function renderGrid(cafes) {
+      const grid = document.getElementById('cafeGrid');
+      if (!grid) return;
+
+      if (cafes.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align:center; padding: 40px; color: var(--text-muted);">
+            <i class="fas fa-search" style="font-size: 2.5rem; margin-bottom: 12px; color: var(--brand-primary);"></i>
+            <p style="font-weight:700;">Kafe tidak ditemukan</p>
+            <p style="font-size:0.85rem;">Coba gunakan kata kunci pencarian atau filter lain.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = cafes.map(c => {
+        const isSaved = wishlist.includes(c.id);
+        const crowdClass = c.crowd === 'sepi' ? 'bg-sepi' : (c.crowd === 'sedang' ? 'bg-sedang' : 'bg-ramai');
+        const crowdLabel = c.crowd === 'sepi' ? '🟢 Sepi (Fokus)' : (c.crowd === 'sedang' ? '🟡 Lumayan' : '🟠 Ramai');
+
+        return `
+          <div class="cafe-card" onclick="openDetail(${c.id})">
+            <div class="card-img-wrapper">
+              <img src="${c.img}" alt="${c.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600'">
+              <button class="wish-icon ${isSaved ? 'active' : ''}" onclick="toggleWish(event, ${c.id})" title="Simpan Kafe">
+                <i class="${isSaved ? 'fas' : 'far'} fa-heart"></i>
+              </button>
+              <span class="area-badge"><i class="fas fa-map-marker-alt"></i> ${c.area}</span>
+            </div>
+
+            <div class="cafe-info">
+              <div class="cafe-title">
+                <span>${c.name}</span>
+                <span class="rating-badge"><i class="fas fa-star"></i> ${c.rating}</span>
+              </div>
+
+              <div class="cafe-meta">
+                <span class="crowd-status ${crowdClass}">${crowdLabel}</span>
+                <span><i class="fas fa-wifi"></i> ${c.wifi}</span>
+              </div>
+
+              <div class="cafe-tags">
+                ${c.tags.slice(0, 3).map(t => `<span class="mini-tag">${t}</span>`).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterCategory(cat, btnElement) {
+      document.querySelectorAll('.quick-tags .tag-btn').forEach(b => b.classList.remove('active'));
+      if (btnElement) btnElement.classList.add('active');
+
+      let filtered = cafesData;
+      if (cat === 'sepi') {
+        filtered = cafesData.filter(c => c.crowd === 'sepi');
+      } else if (cat === 'formal') {
+        filtered = cafesData.filter(c => c.category === 'formal');
+      } else if (cat === 'modern') {
+        filtered = cafesData.filter(c => c.category === 'modern');
+      } else if (cat === '24jam') {
+        filtered = cafesData.filter(c => c.is24h);
+      }
+
+      renderGrid(filtered);
+    }
+
+    function handleSearch() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      const filtered = cafesData.filter(c => 
+        c.name.toLowerCase().includes(q) ||
+        c.area.toLowerCase().includes(q) ||
+        c.desc.toLowerCase().includes(q) ||
+        c.tags.some(t => t.toLowerCase().includes(q))
+      );
+      renderGrid(filtered);
+    }
+
+    function toggleWish(event, id) {
+      event.stopPropagation();
+      const idx = wishlist.indexOf(id);
+      if (idx > -1) {
+        wishlist.splice(idx, 1);
+        showToast('Tersimpan Dihapus', 'Kafe telah dihapus dari wishlist', 'fa-heart-broken');
+      } else {
+        wishlist.push(id);
+        showToast('Tersimpan!', 'Kafe berhasil ditambahkan ke wishlist', 'fa-heart');
+      }
+
+      localStorage.setItem('nongkrongin_wishlist', JSON.stringify(wishlist));
+      updateWishlistBadge();
+      
+      userStats.wishlist_count = wishlist.length;
+      trackProgress('wishlist_count', 0);
+
+      renderGrid(cafesData);
+      if (document.getElementById('page-wishlist').classList.contains('active')) {
+        renderWishlist();
+      }
+    }
+
+    function updateWishlistBadge() {
+      const badge = document.getElementById('wishlistBadge');
+      if (badge) badge.innerText = wishlist.length;
+    }
+
+    function renderWishlist() {
+      const grid = document.getElementById('wishlistGrid');
+      if (!grid) return;
+
+      const savedCafes = cafesData.filter(c => wishlist.includes(c.id));
+      if (savedCafes.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column:1/-1; text-align:center; padding: 40px; color: var(--text-muted);">
+            <i class="far fa-heart" style="font-size: 3rem; margin-bottom: 12px; color: #dc2626;"></i>
+            <p style="font-weight:800; font-size:1.1rem;">Belum ada kafe tersimpan</p>
+            <p style="font-size:0.88rem; margin-top:4px;">Klik ikon hati pada kafe favoritmu untuk menyimpannya di sini.</p>
+          </div>
+        `;
+        return;
+      }
+      renderGrid(savedCafes);
+    }
+
+    function initMap() {
+      const mapElem = document.getElementById('map');
+      if (!mapElem) return;
+
+      mapInstance = L.map('map').setView([-7.9526, 112.6144], 13);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(mapInstance);
+
+      cafesData.forEach(c => {
+        const marker = L.marker([c.lat, c.lng]).addTo(mapInstance);
+        marker.bindPopup(`
+          <div style="font-family:'Plus Jakarta Sans', sans-serif;">
+            <b style="color:#7b3f00;">${c.name}</b><br>
+            <span style="font-size:0.8rem;">${c.area}</span><br>
+            <button onclick="openDetail(${c.id})" style="margin-top:6px; background:#7b3f00; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.75rem;">Lihat Detail</button>
+          </div>
+        `);
+
+        marker.on('click', () => {
+          trackProgress('map_pins', 1);
+        });
+      });
+
+      renderMapSidebar();
+    }
+
+    function renderMapSidebar() {
+      const container = document.getElementById('mapSidebarList');
+      if (!container) return;
+
+      container.innerHTML = cafesData.map(c => `
+        <div class="map-sidebar-card" onclick="openDetail(${c.id})">
+          <img src="${c.img}" alt="${c.name}">
+          <div>
+            <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-main);">${c.name}</h4>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;"><i class="fas fa-map-marker-alt"></i> ${c.area}</p>
+            <span style="font-size:0.75rem; font-weight:700; color:var(--brand-primary); margin-top:4px; display:inline-block;"><i class="fas fa-wifi"></i> ${c.wifi}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderGallery() {
+      const container = document.getElementById('galleryGrid');
+      if (!container) return;
+
+      container.innerHTML = cafesData.slice(0, 8).map(c => `
+        <div style="position:relative; border-radius:var(--radius-md); overflow:hidden; height:220px; cursor:pointer; border:1px solid var(--border-color);" onclick="openDetail(${c.id})">
+          <img src="${c.img}" alt="${c.name}" style="width:100%; height:100%; object-fit:cover;">
+          <div style="position:absolute; inset:0; background:linear-gradient(to top, rgba(43,30,22,0.88), transparent 60%); display:flex; flex-direction:column; justify-content:flex-end; padding:12px; color:white;">
+            <strong style="font-size:0.95rem;">${c.name}</strong>
+            <span style="font-size:0.8rem; opacity:0.9;">${c.area}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderRecommendations() {
+      const container = document.getElementById('recommendList');
+      if (!container) return;
+
+      const recommended = cafesData.filter(c => c.category === 'formal' || c.is24h);
+      container.innerHTML = recommended.map(c => `
+        <div style="background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-color); padding:20px; margin-bottom:16px; display:flex; gap:20px; align-items:center;">
+          <img src="${c.img}" alt="${c.name}" style="width:130px; height:130px; border-radius:var(--radius-md); object-fit:cover;">
+          <div style="flex:1;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main);">${c.name}</h3>
+              <span class="rating-badge"><i class="fas fa-star"></i> ${c.rating}</span>
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin:4px 0 10px 0;"><i class="fas fa-map-marker-alt"></i> ${c.area}</p>
+            <p style="font-size:0.9rem; color:var(--text-main); line-height:1.5; margin-bottom:12px;">${c.desc}</p>
+            <button onclick="openDetail(${c.id})" style="background:var(--brand-primary); color:white; border:none; padding:8px 18px; border-radius:var(--radius-pill); font-weight:700; cursor:pointer; font-size:0.85rem;">Lihat Selengkapnya</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderBadgeSubnav() {
+      const container = document.getElementById('badgeSubnavItems');
+      if (!container) return;
+
+      const mainDrinkIds = ["matcha_lover", "americano_lover", "latte_lover", "double_shot_depression"];
+
+      container.innerHTML = mainDrinkIds.map(catId => {
+        const cat = badgeCategories.find(b => b.id === catId);
+        const currentCount = userStats[cat.key] || 0;
+
+        let activeTier = null;
+        for (let i = cat.tiers.length - 1; i >= 0; i--) {
+          const tierKey = `${cat.id}_${cat.tiers[i].level.toLowerCase()}`;
+          if (userStats.unlockedTiers.includes(tierKey) || currentCount >= cat.tiers[i].target) {
+            activeTier = cat.tiers[i];
+            break;
+          }
+        }
+
+        const isEquipped = activeTier && userStats.equippedTitle === activeTier.title;
+        const highestUnlockedLevel = activeTier ? activeTier.level : "LOCKED";
+
+        let statusClass = isEquipped ? 'equipped' : (activeTier ? 'unlocked' : 'locked');
+        let levelTagClass = activeTier ? `level-tag-${activeTier.level.toLowerCase()}` : '';
+
+        return `
+          <button class="drink-badge-pill ${statusClass}" onclick="handleBadgeSubnavClick('${cat.id}')">
+            <span>${cat.title}</span>
+            ${activeTier ? `<span class="level-tag-mini ${levelTagClass}">${highestUnlockedLevel}</span>` : '<i class="fas fa-lock" style="font-size:0.7rem;"></i>'}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function handleBadgeSubnavClick(catId) {
+      const cat = badgeCategories.find(b => b.id === catId);
+      const currentCount = userStats[cat.key] || 0;
+
+      let highestUnlocked = null;
+      for (let i = cat.tiers.length - 1; i >= 0; i--) {
+        const tierKey = `${cat.id}_${cat.tiers[i].level.toLowerCase()}`;
+        if (userStats.unlockedTiers.includes(tierKey) || currentCount >= cat.tiers[i].target) {
+          highestUnlocked = cat.tiers[i];
+          break;
+        }
+      }
+
+      if (highestUnlocked) {
+        equipJulukan(highestUnlocked.title);
+      } else {
+        switchTab('achievements');
+        showToast(`Misi ${cat.title}`, `${cat.tiers[0].desc} (${currentCount}/${cat.tiers[0].target})`, cat.icon);
+      }
+    }
+
+    function equipJulukan(julukanTitle) {
+      userStats.equippedTitle = julukanTitle;
+      localStorage.setItem('nongkrongin_user_stats', JSON.stringify(userStats));
+      updateProfileHeader();
+      renderTieredAchievements();
+      renderBadgeSubnav();
+      showToast('Julukan Diperbarui!', `Kamu memakai badge: <b>${julukanTitle}</b>`, 'fa-tag');
+    }
+
+    function updateProfileHeader() {
+      const titleBadge = document.getElementById('navTitleBadge');
+      const profileTitle = document.getElementById('profileEquippedTitle');
+      const xpDisplay = document.getElementById('totalXpDisplay');
+      const rankTitle = document.getElementById('userRankTitle');
+      const xpFill = document.getElementById('xpProgressFill');
+
+      const currentTitle = userStats.equippedTitle || "🍵 Matcha Beginner";
+      
+      if (titleBadge) titleBadge.innerHTML = `<i class="fas fa-certificate"></i> ${currentTitle}`;
+      if (profileTitle) profileTitle.innerHTML = `<i class="fas fa-tag"></i> ${currentTitle}`;
+
+      const currentXp = userStats.xp || 0;
+      const level = Math.floor(currentXp / 200) + 1;
+      const progressInLevel = (currentXp % 200) / 200 * 100;
+
+      if (rankTitle) rankTitle.innerText = `Level ${level} — Penjelajah nongkrongin.id`;
+      if (xpDisplay) xpDisplay.innerText = `${currentXp} XP`;
+      if (xpFill) xpFill.style.width = `${Math.min(progressInLevel, 100)}%`;
+    }
+
+    function trackProgress(key, amount) {
+      if (!userStats[key]) userStats[key] = 0;
+      userStats[key] += amount;
+      localStorage.setItem('nongkrongin_user_stats', JSON.stringify(userStats));
+      checkLevelTriggers();
+    }
+
+    function checkLevelTriggers() {
+      badgeCategories.forEach(cat => {
+        const currentCount = userStats[cat.key] || 0;
+
+        cat.tiers.forEach(tier => {
+          const tierKey = `${cat.id}_${tier.level.toLowerCase()}`;
+          const wasUnlocked = userStats.unlockedTiers.includes(tierKey);
+
+          if (currentCount >= tier.target && !wasUnlocked) {
+            userStats.unlockedTiers.push(tierKey);
+            userStats.xp += tier.xp;
+            localStorage.setItem('nongkrongin_user_stats', JSON.stringify(userStats));
+
+            showToast(`LEVEL UNLOCKED! (${tier.level})`, `Kamu membuka julukan <b>${tier.title}</b> (+${tier.xp} XP)`, cat.icon);
+          }
+        });
+      });
+
+      renderTieredAchievements();
+      renderBadgeSubnav();
+      updateProfileHeader();
+    }
+
+    function renderTieredAchievements() {
+      const container = document.getElementById('tieredAchievementsContainer');
+      if (!container) return;
+
+      container.innerHTML = badgeCategories.map(cat => {
+        const currentCount = userStats[cat.key] || 0;
+
+        const tiersMarkup = cat.tiers.map(tier => {
+          const tierKey = `${cat.id}_${tier.level.toLowerCase()}`;
+          const isUnlocked = userStats.unlockedTiers.includes(tierKey) || currentCount >= tier.target;
+          const isEquipped = userStats.equippedTitle === tier.title;
+          const tagClass = `level-tag-${tier.level.toLowerCase()}`;
+
+          return `
+            <div class="tier-item ${isUnlocked ? 'unlocked' : 'locked'}">
+              <div style="flex:1;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <strong style="font-size:0.92rem; color:var(--text-main);">${tier.title}</strong>
+                  <span class="level-tag-mini ${tagClass}">${tier.level}</span>
+                  <span style="font-size:0.75rem; font-weight:800; color:var(--brand-primary);">(+${tier.xp} XP)</span>
+                </div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">${tier.desc}</p>
+                <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-top:4px;">
+                  Progress: ${Math.min(currentCount, tier.target)} / ${tier.target}
+                </div>
+              </div>
+
+              <div>
+                ${isUnlocked ? `
+                  <button class="equip-btn ${isEquipped ? 'active' : ''}" onclick="equipJulukan('${tier.title}')">
+                    <i class="fas ${isEquipped ? 'fa-check' : 'fa-tag'}"></i> ${isEquipped ? 'Dipakai' : 'Gunakan'}
+                  </button>
+                ` : `
+                  <button class="equip-btn" disabled style="opacity:0.5; cursor:not-allowed; background:var(--bg-surface); color:var(--text-muted);">
+                    <i class="fas fa-lock"></i> Terkunci
+                  </button>
+                `}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="achievement-card-tiered">
+            <div class="achievement-card-header">
+              <div class="achievement-icon-wrapper">
+                <i class="fas ${cat.icon}"></i>
+              </div>
+              <div>
+                <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main);">${cat.title}</h3>
+                <p style="font-size:0.82rem; color:var(--text-muted);">Tingkatkan progres dari Beginner hingga Expert</p>
+              </div>
+            </div>
+
+            <div class="level-tiers-list">
+              ${tiersMarkup}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function showToast(title, message, icon = 'fa-trophy') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      toast.className = 'achievement-toast';
+      toast.innerHTML = `
+        <div style="width:38px; height:38px; border-radius:50%; background:#7b3f00; color:white; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;">
+          <i class="fas ${icon}"></i>
+        </div>
+        <div>
+          <h4 style="font-size:0.9rem; font-weight:800; color:#d08851; margin-bottom:2px;">${title}</h4>
+          <p style="font-size:0.8rem; color:#f8fafc; line-height:1.3;">${message}</p>
+        </div>
+      `;
+
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark-mocha' ? 'warm-coffee' : 'dark-mocha';
+      document.documentElement.setAttribute('data-theme', next);
+
+      const btnIcon = document.querySelector('#themeToggleBtn i');
+      if (btnIcon) {
+        btnIcon.className = next === 'dark-mocha' ? 'fas fa-sun' : 'fas fa-moon';
+      }
+    }
+
+    function openDetail(id) {
+      const c = cafesData.find(item => item.id === id);
+      if (!c) return;
+
+      if (c.tags.some(t => t.toLowerCase().includes('matcha'))) trackProgress('matcha_views', 1);
+      if (c.tags.some(t => t.toLowerCase().includes('americano'))) trackProgress('americano_views', 1);
+      if (c.tags.some(t => t.toLowerCase().includes('latte'))) trackProgress('latte_views', 1);
+      if (c.tags.some(t => t.toLowerCase().includes('double shot'))) trackProgress('double_shot_views', 1);
+      if (c.category === 'formal' || c.tags.includes('Quiet Zone')) trackProgress('nugas_views', 1);
+
+      const isSaved = wishlist.includes(c.id);
+      document.getElementById('modalBody').innerHTML = `
+        <img class="modal-header-img" src="${c.img}" alt="${c.name}">
+        <div class="modal-content">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
+            <h2 style="font-size:1.4rem; font-weight:800; color:var(--text-main);">${c.name}</h2>
+            <span class="rating-badge" style="font-size:0.9rem; padding:4px 10px;"><i class="fas fa-star"></i> ${c.rating}</span>
+          </div>
+
+          <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:12px;">
+            <i class="fas fa-map-marker-alt" style="color:var(--brand-primary)"></i> ${c.area}
+          </p>
+
+          <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px;">
+            ${c.tags.map(t => `<span class="mini-tag" style="background:var(--brand-light); color:var(--brand-primary); font-weight:700;">${t}</span>`).join('')}
+          </div>
+
+          <p style="color:var(--text-main); font-size:0.95rem; line-height:1.6; margin-bottom:20px;">${c.desc}</p>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; background:var(--bg-surface); padding:14px; border-radius:var(--radius-md);">
+            <div>
+              <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">KECEPATAN WIFI</span>
+              <p style="font-weight:800; color:var(--brand-primary);"><i class="fas fa-wifi"></i> ${c.wifi}</p>
+            </div>
+            <div>
+              <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">ESTIMASI HARGA</span>
+              <p style="font-weight:800; color:var(--text-main);"><i class="fas fa-tag"></i> ${c.price}</p>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:20px;">
+            <button onclick="toggleWish(event, ${c.id}); openDetail(${c.id});" style="flex:1; padding:12px; background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-pill); font-weight:700; cursor:pointer; color:var(--text-main);">
+              <i class="${isSaved ? 'fas' : 'far'} fa-heart" style="color:#dc2626;"></i> ${isSaved ? 'Tersimpan' : 'Simpan'}
+            </button>
+            <a href="https://maps.google.com/?q=${c.lat},${c.lng}" target="_blank" style="flex:2; text-align:center; padding:12px; background:var(--brand-primary); color:white; text-decoration:none; border-radius:var(--radius-pill); font-weight:700;">
+              <i class="fas fa-directions"></i> Petunjuk Arah
+            </a>
+          </div>
+        </div>
+      `;
+      document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    function closeModal(e) {
+      if (!e || e.target === document.getElementById('modalOverlay') || e.target.closest('.modal-close-btn')) {
+        document.getElementById('modalOverlay').classList.remove('active');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderGrid(cafesData);
+      updateWishlistBadge();
+      updateProfileHeader();
+      renderBadgeSubnav();
+      checkLevelTriggers();
+    });
+  </script>
+</body>
+</html>
