@@ -1,1864 +1,1014 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="warm-coffee">
+<html lang="id" class="h-full">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>nongkrongin.id — Cari Kafe Aesthetic & Nugas Tanpa Ribet (Coffee Edition)</title>
-  
-  <!-- Leaflet CSS & JS for Interactive Map -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  
-  <!-- FontAwesome 6 Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  
-  <!-- Google Fonts: Plus Jakarta Sans & Outfit for Coffee Aesthetic -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
-
-  <style>
-:root {
-  --bg-main: #fdfbf7;
-  --bg-card: #ffffff;
-  --bg-surface: #f5ebe0;
-  --text-main: #2b1e16;
-  --text-muted: #785942;
-  --brand-primary: #8b4513;
-  --brand-hover: #522b00;
-  --brand-light: #ede0d4;
-  --accent-gold: #d97706;
-  --accent-gold-bg: #fef3c7;
-  --border-color: #e6ccb2;
-  --shadow-sm: 0 4px 12px rgba(67, 40, 24, 0.06);
-  --shadow-md: 0 8px 24px rgba(67, 40, 24, 0.12);
-  --shadow-lg: 0 16px 32px rgba(67, 40, 24, 0.18);
-  --radius-lg: 20px;
-  --radius-md: 14px;
-  --radius-pill: 999px;
-  --nav-height: 68px;
-  --bottom-nav-height: 64px;
-}
-
-[data-theme="dark-mocha"] {
-  --bg-main: #18110c;
-  --bg-card: #241a14;
-  --bg-surface: #36271e;
-  --text-main: #f7ebe1;
-  --text-muted: #c4a994;
-  --brand-primary: #d08851;
-  --brand-hover: #e09f6a;
-  --brand-light: #362419;
-  --accent-gold: #f59e0b;
-  --accent-gold-bg: #451a03;
-  --border-color: #4a3427;
-  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
-
-body { 
-  background: linear-gradient(180deg, #f5ebe0 0%, #fdfbf7 380px, var(--bg-main) 100%);
-  background-attachment: fixed;
-  color: var(--text-main); 
-  padding-top: calc(var(--nav-height) + 56px); 
-  padding-bottom: calc(var(--bottom-nav-height) + 20px); 
-  transition: background-color 0.3s ease, color 0.3s ease; 
-}
-
-.navbar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: var(--nav-height);
-  background: rgba(253, 251, 247, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-color);
-  z-index: 1100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  transition: all 0.3s ease;
-}
-
-[data-theme="dark-mocha"] .navbar {
-  background: rgba(24, 17, 12, 0.92);
-}
-
-.nav-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--brand-primary);
-  letter-spacing: -0.4px;
-}
-
-.nav-brand .logo-icon {
-  width: 42px;
-  height: 42px;
-  background: linear-gradient(135deg, #7b3f00, #b05b12);
-  color: #fff;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  box-shadow: 0 4px 12px rgba(123, 63, 0, 0.3);
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--bg-surface);
-  padding: 5px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--border-color);
-}
-
-.nav-link-btn {
-  background: transparent;
-  border: none;
-  padding: 8px 18px;
-  border-radius: var(--radius-pill);
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-}
-
-.nav-link-btn:hover {
-  color: var(--text-main);
-  background: rgba(139, 69, 19, 0.08);
-}
-
-.nav-link-btn.active {
-  background: linear-gradient(135deg, #7b3f00, #8b4513);
-  color: white !important;
-  box-shadow: 0 4px 12px rgba(123, 63, 0, 0.35);
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.action-btn {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  width: 42px;
-  height: 42px;
-  border-radius: var(--radius-pill);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-main);
-  font-size: 1.1rem;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.2s ease;
-}
-
-.action-btn:hover {
-  border-color: var(--brand-primary);
-  color: var(--brand-primary);
-  transform: translateY(-2px);
-}
-
-.badge-count {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  background: #dc2626;
-  color: white;
-  font-size: 0.68rem;
-  font-weight: 800;
-  height: 18px;
-  min-width: 18px;
-  border-radius: var(--radius-pill);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 4px;
-  border: 2px solid var(--bg-card);
-}
-
-.badge-subnav {
-  background: rgba(253, 251, 247, 0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border-color);
-  padding: 8px 24px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  z-index: 1090;
-  position: fixed;
-  top: var(--nav-height);
-  left: 0;
-  right: 0;
-  box-shadow: 0 4px 12px rgba(67, 40, 24, 0.05);
-}
-
-.badge-subnav::-webkit-scrollbar { display: none; }
-
-[data-theme="dark-mocha"] .badge-subnav {
-  background: rgba(24, 17, 12, 0.95);
-}
-
-.badge-subnav-title {
-  font-size: 0.78rem;
-  font-weight: 800;
-  color: var(--brand-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding-right: 8px;
-  border-right: 2px solid var(--border-color);
-}
-
-.drink-badge-pill {
-  background: var(--bg-card);
-  border: 1.5px solid var(--border-color);
-  border-radius: var(--radius-pill);
-  padding: 6px 14px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-}
-
-.drink-badge-pill:hover {
-  transform: translateY(-2px);
-  border-color: var(--brand-primary);
-  color: var(--text-main);
-}
-
-.drink-badge-pill.unlocked {
-  border-color: #d08851;
-  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(208, 136, 81, 0.15) 100%);
-  color: var(--text-main);
-}
-
-.drink-badge-pill.equipped {
-  background: linear-gradient(135deg, #7b3f00 0%, #4a2602 100%);
-  color: #fff !important;
-  border-color: #7b3f00;
-  box-shadow: 0 4px 12px rgba(123, 63, 0, 0.35);
-}
-
-.drink-badge-pill.locked {
-  opacity: 0.65;
-  border-style: dashed;
-}
-
-.level-tag-mini {
-  font-size: 0.68rem;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  margin-left: 2px;
-}
-
-.level-tag-beginner { background: #e0f2fe; color: #0369a1; }
-.level-tag-pro { background: #fef3c7; color: #b45309; }
-.level-tag-expert { background: #dcfce7; color: #15803d; }
-
-.page {
-  display: none;
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 24px 20px;
-  animation: fadeInPage 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.page.active { display: block; }
-
-@keyframes fadeInPage {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.page-header { margin-bottom: 24px; }
-
-.page-title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  letter-spacing: -0.5px;
-}
-
-.page-subtitle {
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  margin-top: 4px;
-}
-
-.hero-banner {
-  background: linear-gradient(135deg, #4a2810 0%, #7b3f00 50%, #2b1708 100%);
-  color: white;
-  border-radius: var(--radius-lg);
-  padding: 36px 30px;
-  margin-bottom: 24px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-  border: 1px solid rgba(230, 204, 178, 0.2);
-}
-
-.hero-banner::after {
-  content: '\f0f4';
-  font-family: 'Font Awesome 6 Free';
-  font-weight: 900;
-  position: absolute;
-  right: -20px;
-  bottom: -30px;
-  font-size: 12rem;
-  opacity: 0.08;
-  color: #fff;
-  pointer-events: none;
-}
-
-.hero-title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.95rem;
-  font-weight: 800;
-  margin-bottom: 10px;
-  line-height: 1.25;
-  letter-spacing: -0.5px;
-}
-
-.hero-desc {
-  font-size: 0.98rem;
-  opacity: 0.92;
-  margin-bottom: 22px;
-  max-width: 620px;
-  line-height: 1.5;
-}
-
-.search-box {
-  background: white;
-  border-radius: var(--radius-pill);
-  padding: 6px 8px 6px 20px;
-  display: flex;
-  align-items: center;
-  max-width: 580px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.18);
-}
-
-.search-box input {
-  border: none;
-  outline: none;
-  width: 100%;
-  font-size: 0.95rem;
-  color: #2b1e16;
-  background: transparent;
-}
-
-.search-box button {
-  background: linear-gradient(135deg, #7b3f00, #a0522d);
-  color: white;
-  border: none;
-  padding: 10px 22px;
-  border-radius: var(--radius-pill);
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.search-box button:hover { background: var(--brand-hover); }
-
-.quick-tags {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  padding-bottom: 8px;
-  margin-bottom: 20px;
-  scrollbar-width: none;
-}
-.quick-tags::-webkit-scrollbar { display: none; }
-
-.tag-btn {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  padding: 10px 18px;
-  border-radius: var(--radius-pill);
-  font-weight: 600;
-  font-size: 0.88rem;
-  color: var(--text-muted);
-  cursor: pointer;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-  box-shadow: var(--shadow-sm);
-}
-
-.tag-btn.active {
-  background: linear-gradient(135deg, #7b3f00, #8b4513);
-  color: white;
-  border-color: #7b3f00;
-  box-shadow: 0 4px 12px rgba(123, 63, 0, 0.3);
-}
-
-.cafe-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 20px;
-}
-
-.cafe-card {
-  background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-sm);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-.cafe-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--brand-primary);
-}
-
-.card-img-wrapper {
-  position: relative;
-  height: 190px;
-  overflow: hidden;
-}
-
-.card-img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.cafe-card:hover .card-img-wrapper img { transform: scale(1.05); }
-
-.wish-icon {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(4px);
-  border: none;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #94a3b8;
-  font-size: 1rem;
-  transition: all 0.2s ease;
-  z-index: 2;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-}
-
-.wish-icon.active { color: #dc2626; background: #ffffff; }
-
-.area-badge {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  background: rgba(43, 30, 22, 0.88);
-  backdrop-filter: blur(6px);
-  color: #f5ebe0;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.cafe-info {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.cafe-title {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--text-main);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-
-.rating-badge {
-  background: var(--accent-gold-bg);
-  color: var(--accent-gold);
-  font-size: 0.8rem;
-  font-weight: 800;
-  padding: 3px 8px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  white-space: nowrap;
-}
-
-.cafe-meta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  margin-bottom: 12px;
-  font-weight: 500;
-}
-
-.crowd-status {
-  padding: 3px 9px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.bg-sepi { background: #dcfce7; color: #15803d; }
-.bg-sedang { background: #fef9c3; color: #a16207; }
-.bg-ramai { background: #ffedd5; color: #c2410c; }
-
-[data-theme="dark-mocha"] .bg-sepi { background: #052e16; color: #4ade80; }
-[data-theme="dark-mocha"] .bg-sedang { background: #422006; color: #facc15; }
-[data-theme="dark-mocha"] .bg-ramai { background: #431407; color: #fb923c; }
-
-.cafe-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: auto;
-  padding-top: 10px;
-  border-top: 1px dashed var(--border-color);
-}
-
-.mini-tag {
-  background: var(--bg-surface);
-  color: var(--text-muted);
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 6px;
-}
-
-#map {
-  width: 100%;
-  height: 65vh;
-  min-height: 400px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-sm);
-  z-index: 1;
-}
-
-.map-page-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 20px;
-}
-
-.map-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  max-height: 65vh;
-  overflow-y: auto;
-  padding-right: 4px;
-}
-
-.map-sidebar-card {
-  background: var(--bg-card);
-  padding: 12px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  cursor: pointer;
-  display: flex;
-  gap: 12px;
-  transition: all 0.2s ease;
-}
-
-.map-sidebar-card:hover {
-  border-color: var(--brand-primary);
-  background: var(--bg-surface);
-}
-
-.map-sidebar-card img {
-  width: 70px;
-  height: 70px;
-  border-radius: var(--radius-sm);
-  object-fit: cover;
-}
-
-.user-profile-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f5ebe0 100%);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  margin-bottom: 24px;
-  box-shadow: var(--shadow-md);
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  position: relative;
-  overflow: hidden;
-}
-
-[data-theme="dark-mocha"] .user-profile-card {
-  background: linear-gradient(135deg, #241a14 0%, #18110c 100%);
-}
-
-.avatar-wrapper {
-  width: 76px;
-  height: 76px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #7b3f00, #a0522d);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.4rem;
-  box-shadow: 0 6px 16px rgba(123, 63, 0, 0.35);
-  flex-shrink: 0;
-}
-
-.user-title-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--brand-light);
-  color: var(--brand-primary);
-  border: 1px solid var(--border-color);
-  padding: 4px 12px;
-  border-radius: var(--radius-pill);
-  font-size: 0.82rem;
-  font-weight: 800;
-  margin-top: 4px;
-}
-
-.xp-progress-bar {
-  width: 100%;
-  height: 10px;
-  background: rgba(123, 63, 0, 0.15);
-  border-radius: var(--radius-pill);
-  overflow: hidden;
-  margin-top: 10px;
-}
-
-.xp-progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #d08851, #7b3f00);
-  border-radius: var(--radius-pill);
-  transition: width 0.4s ease;
-}
-
-/* Tiered Level Badge Section */
-.achievement-card-tiered {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.achievement-card-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.achievement-icon-wrapper {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-md);
-  background: var(--bg-surface);
-  color: var(--brand-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.level-tiers-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 4px;
-}
-
-.tier-item {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  transition: all 0.2s ease;
-}
-
-.tier-item.unlocked {
-  border-color: #d08851;
-  background: linear-gradient(90deg, var(--bg-card) 0%, rgba(245, 235, 224, 0.8) 100%);
-}
-
-.tier-item.locked {
-  opacity: 0.65;
-}
-
-.equip-btn {
-  background: var(--brand-primary);
-  color: white;
-  border: none;
-  padding: 6px 14px;
-  border-radius: var(--radius-pill);
-  font-size: 0.78rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.equip-btn.active {
-  background: #10b981;
-  color: white;
-}
-
-.toast-container {
-  position: fixed;
-  bottom: 80px;
-  right: 20px;
-  z-index: 3000;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  pointer-events: none;
-}
-
-.achievement-toast {
-  background: #2b1e16;
-  color: white;
-  border: 2px solid #d08851;
-  padding: 14px 18px;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: auto;
-  max-width: 350px;
-}
-
-@keyframes slideInRight {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-.bottom-nav {
-  display: none;
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: var(--bottom-nav-height);
-  background: rgba(253, 251, 247, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-top: 1px solid var(--border-color);
-  z-index: 1100;
-  justify-content: space-around;
-  align-items: center;
-  padding: 0 8px;
-}
-
-[data-theme="dark-mocha"] .bottom-nav {
-  background: rgba(24, 17, 12, 0.92);
-}
-
-.bottom-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  color: var(--text-muted);
-  font-size: 0.72rem;
-  font-weight: 700;
-  cursor: pointer;
-  background: none;
-  border: none;
-  width: 20%;
-  padding: 6px 0;
-  transition: all 0.2s ease;
-}
-
-.bottom-item i { font-size: 1.25rem; }
-.bottom-item.active { color: var(--brand-primary); }
-
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(43, 30, 22, 0.7);
-  backdrop-filter: blur(4px);
-  z-index: 2000;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.modal-overlay.active {
-  display: flex;
-  animation: fadeIn 0.2s ease;
-}
-
-.modal-box {
-  background: var(--bg-card);
-  width: 100%;
-  max-width: 640px;
-  border-radius: var(--radius-lg);
-  max-height: 90vh;
-  overflow-y: auto;
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-lg);
-  position: relative;
-}
-
-.modal-header-img {
-  width: 100%;
-  height: 240px;
-  object-fit: cover;
-}
-
-.modal-close-btn {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  background: rgba(0,0,0,0.6);
-  color: white;
-  border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-}
-
-.modal-content { padding: 24px; }
-
-@media (max-width: 868px) {
-  .nav-links { display: none; }
-  .bottom-nav { display: flex; }
-  .map-page-wrapper { grid-template-columns: 1fr; }
-  .map-sidebar { max-height: 300px; }
-}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SanguKu - Aplikasi Keuangan Sangu Remaja</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f5ff',
+                            100: '#e0ebff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        },
+                        kebutuhan: '#3b82f6', // Blue
+                        keinginan: '#ec4899', // Pink
+                        tabungan: '#10b981',  // Emerald
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+    </style>
 </head>
-<body>
-
-  <header class="navbar">
-    <a href="#" class="nav-brand" onclick="switchTab('home')">
-      <div class="logo-icon"><i class="fas fa-mug-hot"></i></div>
-      <span>nongkrongin.id</span>
-      <span class="user-title-badge" id="navTitleBadge" style="margin-left:6px; font-size:0.75rem;">
-        <i class="fas fa-certificate"></i> 🍵 Matcha Beginner
-      </span>
-    </a>
-
-    <!-- Desktop Navigation Links -->
-    <nav class="nav-links">
-      <button class="nav-link-btn active" data-tab="home" onclick="switchTab('home')">
-        <i class="fas fa-compass"></i> Jelajah
-      </button>
-      <button class="nav-link-btn" data-tab="map" onclick="switchTab('map')">
-        <i class="fas fa-map-marked-alt"></i> Peta Cafe
-      </button>
-      <button class="nav-link-btn" data-tab="gallery" onclick="switchTab('gallery')">
-        <i class="fas fa-camera-retro"></i> Galeri Spot
-      </button>
-      <button class="nav-link-btn" data-tab="recommend" onclick="switchTab('recommend')">
-        <i class="fas fa-star"></i> Rekomendasi
-      </button>
-      <button class="nav-link-btn" data-tab="wishlist" onclick="switchTab('wishlist')">
-        <i class="fas fa-bookmark"></i> Tersimpan
-      </button>
-      <button class="nav-link-btn" data-tab="achievements" onclick="switchTab('achievements')">
-        <i class="fas fa-award"></i> Level & Julukan
-      </button>
-    </nav>
-
-    <!-- Header Actions -->
-    <div class="nav-actions">
-      <button class="action-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Ganti Tema Kopi">
-        <i class="fas fa-moon"></i>
-      </button>
-      <button class="action-btn" onclick="switchTab('wishlist')" title="Wishlist Cafe">
-        <i class="fas fa-heart" style="color: #dc2626;"></i>
-        <span class="badge-count" id="wishlistBadge">0</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Drink Badge Showcase Sub-Navbar -->
-  <div class="badge-subnav" id="badgeSubnav">
-    <div class="badge-subnav-title">
-      <i class="fas fa-award"></i> Level Badges
-    </div>
-    <div id="badgeSubnavItems" style="display:flex; gap:8px;"></div>
-  </div>
-
-  <main id="page-home" class="page active">
-    <section class="hero-banner">
-      <h1 class="hero-title">Nongkrong & Nugas Jadi Lebih Seru di Malang</h1>
-      <p class="hero-desc">Temukan kafe pilihan dengan aroma kopi terbaik, info realtime Wi-Fi, colokan, dan level up julukan penjelajahmu!</p>
-      
-      <div class="search-box">
-        <i class="fas fa-search" style="color:#7b3f00; margin-right: 10px;"></i>
-        <input type="text" id="searchInput" placeholder="Cari nama kafe, lokasi (Suhat, UB, Ijen), atau varian kopi..." onkeyup="handleSearch()">
-        <button onclick="handleSearch()"><i class="fas fa-filter"></i> Cari</button>
-      </div>
-    </section>
-
-    <!-- Category Quick Filters -->
-    <div class="quick-tags">
-      <button class="tag-btn active" onclick="filterCategory('all', this)"><i class="fas fa-border-all"></i> Semua Kafe</button>
-      <button class="tag-btn" onclick="filterCategory('sepi', this)"><i class="fas fa-leaf"></i> Sepi & Quiet Zone</button>
-      <button class="tag-btn" onclick="filterCategory('formal', this)"><i class="fas fa-laptop-code"></i> Nugas & Kerja</button>
-      <button class="tag-btn" onclick="filterCategory('modern', this)"><i class="fas fa-camera"></i> Aesthetic & Rooftop</button>
-      <button class="tag-btn" onclick="filterCategory('24jam', this)"><i class="fas fa-clock"></i> Buka 24 Jam</button>
-    </div>
-
-    <!-- Cafe Grid -->
-    <div class="cafe-grid" id="cafeGrid"></div>
-  </main>
-
-  <section id="page-map" class="page">
-    <div class="page-header">
-      <h2 class="page-title"><i class="fas fa-map-marked-alt" style="color:var(--brand-primary)"></i> Peta nongkrongin.id Malang</h2>
-      <p class="page-subtitle">Pilih pin kafe di peta untuk melihat lokasi presisi dan rute dari kampus.</p>
-    </div>
-
-    <div class="map-page-wrapper">
-      <div id="map"></div>
-      <div class="map-sidebar" id="mapSidebarList"></div>
-    </div>
-  </section>
-
-  <section id="page-gallery" class="page">
-    <div class="page-header">
-      <h2 class="page-title"><i class="fas fa-camera-retro" style="color:var(--brand-primary)"></i> Galeri Spot Photo Aesthetic</h2>
-      <p class="page-subtitle">Spot-spot favorit anak muda Malang buat bahan story dan feeds Instagram.</p>
-    </div>
-
-    <div class="gallery-grid" id="galleryGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:16px;"></div>
-  </section>
-
-  <section id="page-recommend" class="page">
-    <div class="page-header">
-      <h2 class="page-title"><i class="fas fa-award" style="color:var(--brand-primary)"></i> Rekomendasi Tempat Nugas</h2>
-      <p class="page-subtitle">cafe yang terdapat wifi yang maksimal dengan Quiet Zone dan fasilitas colokan lengkap.</p>
-    </div>
-
-    <div id="recommendList"></div>
-  </section>
-
-  <section id="page-wishlist" class="page">
-    <div class="page-header">
-      <h2 class="page-title"><i class="fas fa-heart" style="color:#dc2626"></i> Kafe Favorit Tersimpan</h2>
-      <p class="page-subtitle">Daftar kafe yang telah kamu simpan untuk dikunjungi nanti.</p>
-    </div>
-
-    <div class="cafe-grid" id="wishlistGrid"></div>
-  </section>
-
-  <section id="page-achievements" class="page">
-    <div class="page-header">
-      <h2 class="page-title"><i class="fas fa-award" style="color:var(--brand-primary)"></i> Level Misi & Julukan Profil</h2>
-      <p class="page-subtitle">Selesaikan misi dari tingkat <b>Beginner</b>, <b>Pro</b>, hingga <b>Expert</b> untuk membuka julukan paling legendaris!</p>
-    </div>
-
-    <div class="user-profile-card">
-      <div class="avatar-wrapper">
-        <i class="fas fa-user-astronaut"></i>
-      </div>
-      <div style="flex:1;">
-        <div style="display:flex; justify-style:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-          <div>
-            <h3 style="font-size:1.25rem; font-weight:800; color:var(--text-main);" id="userRankTitle">Level 1 — Penjelajah Nongkrong</h3>
-            <span class="user-title-badge" id="profileEquippedTitle"><i class="fas fa-tag"></i> 🍵 Matcha Beginner</span>
-          </div>
-          <span style="font-size:0.85rem; font-weight:800; color:var(--brand-primary);" id="totalXpDisplay">0 / 200 XP</span>
-        </div>
-
-        <div class="xp-progress-bar">
-          <div class="xp-progress-fill" id="xpProgressFill" style="width: 0%;"></div>
-        </div>
-      </div>
-    </div>
-
-    <div id="tieredAchievementsContainer" style="display:flex; flex-direction:column; gap:20px;"></div>
-  </section>
-
-  <nav class="bottom-nav">
-    <button class="bottom-item active" data-tab="home" onclick="switchTab('home')">
-      <i class="fas fa-compass"></i>
-      <span>Jelajah</span>
-    </button>
-    <button class="bottom-item" data-tab="map" onclick="switchTab('map')">
-      <i class="fas fa-map-pin"></i>
-      <span>Peta</span>
-    </button>
-    <button class="bottom-item" data-tab="gallery" onclick="switchTab('gallery')">
-      <i class="fas fa-camera"></i>
-      <span>Galeri</span>
-    </button>
-    <button class="bottom-item" data-tab="achievements" onclick="switchTab('achievements')">
-      <i class="fas fa-award"></i>
-      <span>Level</span>
-    </button>
-    <button class="bottom-item" data-tab="wishlist" onclick="switchTab('wishlist')">
-      <i class="fas fa-bookmark"></i>
-      <span>Saved</span>
-    </button>
-  </nav>
-
-  <!-- Realtime Toast Notifications -->
-  <div id="toastContainer" class="toast-container"></div>
-
-  <!-- Detail Modal -->
-  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-    <div class="modal-box" onclick="event.stopPropagation()">
-      <button class="modal-close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
-      <div id="modalBody"></div>
-    </div>
-  </div>
-
-  <script>
-    const cafesData = [
-      { 
-        id: 1, 
-        name: "Academic Coffee & Space", 
-        area: "Lowokwaru (UB)",
-        lat: -7.9526, 
-        lng: 112.6144, 
-        category: "formal", 
-        crowd: "sedang", 
-        rating: 4.8, 
-        price: "Rp 20rb - 45rb", 
-        is24h: true,
-        wifi: "120 Mbps",
-        img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600", 
-        tags: ["WiFi Kencang", "Quiet Zone", "Buka 24 Jam", "Matcha", "Americano", "Double Shot"],
-        desc: "Konsep kafe akademis dengan pencahayaan hangat, matcha artisan pilihan, double shot espresso penahan kantuk, serta area belajar bebas bising."
-      },
-      { 
-        id: 2, 
-        name: "Minimalist Brew Studio", 
-        area: "Soekarno Hatta (Suhat)",
-        lat: -7.9422, 
-        lng: 112.6227, 
-        category: "modern", 
-        crowd: "ramai", 
-        rating: 4.9, 
-        price: "Rp 25rb - 60rb", 
-        is24h: false,
-        wifi: "80 Mbps",
-        img: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600", 
-        tags: ["Aesthetic", "Outdoor Garden", "Latte", "Matcha"],
-        desc: "Destinasi populer anak muda Malang. Desain monokrom industrial dengan spesialisasi Latte Art estetik dan matcha impor berkualitas tinggi."
-      },
-      { 
-        id: 3, 
-        name: "Kopi Heritage Klojen", 
-        area: "Klojen (Pusat Kota)",
-        lat: -7.9785, 
-        lng: 112.6315, 
-        category: "formal", 
-        crowd: "sepi", 
-        rating: 4.6, 
-        price: "Rp 15rb - 35rb", 
-        is24h: false,
-        wifi: "50 Mbps",
-        img: "https://images.unsplash.com/photo-1445116572660-23209b471647?w=600", 
-        tags: ["Klasik Vintage", "Americano", "Tenang"],
-        desc: "Nuansa nostalgia rumah kolonial Jawa. Tempat favorit penikmat Americano murni dan kopi tubruk tradisional tanpa gula."
-      },
-      { 
-        id: 4, 
-        name: "Cloud Nine Sky Cafe", 
-        area: "Ijen Boulevard",
-        lat: -7.9705, 
-        lng: 112.6240, 
-        category: "modern", 
-        crowd: "ramai", 
-        rating: 4.7, 
-        price: "Rp 30rb - 75rb", 
-        is24h: true,
-        wifi: "90 Mbps",
-        img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600", 
-        tags: ["Rooftop Sunset", "Latte", "Double Shot", "Buka 24 Jam"],
-        desc: "Kafe rooftop dengan pemandangan kota Malang. Buka 24 jam dengan menu andalan Iced Spanish Latte dan Double Shot Espresso penolong tugas semalam."
-      },
-      { 
-        id: 5, 
-        name: "Kaktus Work & Workspace", 
-        area: "Dau / Malang Barat",
-        lat: -7.9388, 
-        lng: 112.5932, 
-        category: "formal", 
-        crowd: "sepi", 
-        rating: 4.8, 
-        price: "Rp 22rb - 50rb", 
-        is24h: true,
-        wifi: "150 Mbps",
-        img: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600", 
-        tags: ["Private Meeting", "Americano", "Double Shot", "Buka 24 Jam"],
-        desc: "Dilengkapi kursi ergonomis, fasilitas printing, serta menu kopi dosis tinggi seperti Americano & Double Shot Espresso khusus maraton skripsi."
-      },
-      { 
-        id: 6, 
-        name: "Sejiwa Coffee Malang", 
-        area: "Rampal Celaket",
-        lat: -7.9650, 
-        lng: 112.6350, 
-        category: "modern", 
-        crowd: "sedang", 
-        rating: 4.8, 
-        price: "Rp 28rb - 65rb", 
-        is24h: false,
-        wifi: "100 Mbps",
-        img: "https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=600", 
-        tags: ["Aesthetic", "Latte", "Matcha", "Spacious"],
-        desc: "Bangunan kaca modern dengan suasana asri. Menyediakan Latte berkualitas premium serta varian Matcha organik yang lembut di lidah."
-      },
-      { 
-        id: 7, 
-        name: "Crita Kopi & Workspace", 
-        area: "Dinoyo (UM/UB)",
-        lat: -7.9480, 
-        lng: 112.6080, 
-        category: "formal", 
-        crowd: "sepi", 
-        rating: 4.7, 
-        price: "Rp 18rb - 40rb", 
-        is24h: true,
-        wifi: "110 Mbps",
-        img: "https://images.unsplash.com/photo-1498804103079-a6351b050096?w=600", 
-        tags: ["Quiet Zone", "Double Shot", "Matcha", "Buka 24 Jam"],
-        desc: "Spot nongkrong & nugas favorit mahasiswa. Menyediakan booster kafein Double Shot dan Matcha Latte seimbang."
-      },
-      { 
-        id: 8, 
-        name: "Robucca Malang", 
-        area: "Ijen / Tidar",
-        lat: -7.9620, 
-        lng: 112.6100, 
-        category: "modern", 
-        crowd: "ramai", 
-        rating: 4.9, 
-        price: "Rp 30rb - 70rb", 
-        is24h: false,
-        wifi: "95 Mbps",
-        img: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=600", 
-        tags: ["Aesthetic", "Japanese Style", "Matcha", "Latte"],
-        desc: "Sentuhan arsitektur Zen Jepang modern. Matcha pilihan diimpor dari Uji, Jepang dan disajikan secara tradisional."
-      },
-      { 
-        id: 9, 
-        name: "LABORE Coffee & Eatery", 
-        area: "Soekarno Hatta (Suhat)",
-        lat: -7.9390, 
-        lng: 112.6200, 
-        category: "formal", 
-        crowd: "sedang", 
-        rating: 4.7, 
-        price: "Rp 25rb - 55rb", 
-        is24h: false,
-        wifi: "85 Mbps",
-        img: "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=600", 
-        tags: ["Cozy Spot", "Americano", "Latte", "Quiet Zone"],
-        desc: "Ruang kerja luas bernuansa kayu minimalis. Biji kopi roast medium yang menghasilkan Latte & Americano kaya rasa."
-      },
-      { 
-        id: 10, 
-        name: "Bureau Coffee & Co", 
-        area: "Sudimoro",
-        lat: -7.9310, 
-        lng: 112.6280, 
-        category: "modern", 
-        crowd: "ramai", 
-        rating: 4.8, 
-        price: "Rp 20rb - 48rb", 
-        is24h: true,
-        wifi: "100 Mbps",
-        img: "https://images.unsplash.com/photo-1508766917616-d22f3f1eea14?w=600", 
-        tags: ["Outdoor Vibe", "Americano", "Double Shot", "Buka 24 Jam"],
-        desc: "Kawasan nongkrong Sudimoro paling ramai. Tempat pas menikmati Americano dingin atau Double Shot Espresso saat begadang."
-      }
-    ];
-
-    const badgeCategories = [
-      {
-        id: "matcha_lover",
-        title: "Matcha Lovers",
-        icon: "fa-leaf",
-        key: "matcha_views",
-        tiers: [
-          { level: "Beginner", target: 2, title: "🍵 Matcha Beginner", xp: 50, desc: "Buka detail 2 kafe ber-menu Matcha." },
-          { level: "Pro", target: 5, title: "🍵 Matcha Sommelier", xp: 120, desc: "Buka detail 5 kafe spesialis Matcha artisan." },
-          { level: "Expert", target: 8, title: "🍵 Matcha Grandmaster", xp: 250, desc: "Jelajahi 8 kafe penikmat Matcha sejati di Malang." }
-        ]
-      },
-      {
-        id: "americano_lover",
-        title: "Americano Lovers",
-        icon: "fa-coffee",
-        key: "americano_views",
-        tiers: [
-          { level: "Beginner", target: 2, title: "☕ Americano Beginner", xp: 50, desc: "Cek detail 2 kafe dengan menu Kopi Hitam Murni." },
-          { level: "Pro", target: 5, title: "☕ Black Coffee Enthusiast", xp: 120, desc: "Telusuri 5 kafe penyaji Americano terbaik." },
-          { level: "Expert", target: 8, title: "☕ Americano Purist Expert", xp: 250, desc: "Telusuri 8 kafe penikmat kopi tanpa gula." }
-        ]
-      },
-      {
-        id: "latte_lover",
-        title: "Latte Lovers",
-        icon: "fa-glass-whiskey",
-        key: "latte_views",
-        tiers: [
-          { level: "Beginner", target: 2, title: "🥛 Latte Beginner", xp: 50, desc: "Cek detail 2 kafe dengan varian Latte Art." },
-          { level: "Pro", target: 5, title: "🥛 Foam & Latte Artisan", xp: 120, desc: "Jelajahi 5 kafe spesialis Cafe Latte & Spanish Latte." },
-          { level: "Expert", target: 8, title: "🥛 Latte Art Maestro", xp: 250, desc: "Jelajahi 8 kafe ber-barista profesional di Malang." }
-        ]
-      },
-      {
-        id: "double_shot_depression",
-        title: 'Double Shot "Depression"',
-        icon: "fa-bolt",
-        key: "double_shot_views",
-        tiers: [
-          { level: "Beginner", target: 2, title: '⚡ Caffeine Rookie', xp: 50, desc: "Buka detail 2 kafe penyedia ekstra espresso penahan kantuk." },
-          { level: "Pro", target: 5, title: '⚡ Deadline Survivor', xp: 150, desc: "Cek detail 5 kafe 24 jam penolong kejar deadline." },
-          { level: "Expert", target: 8, title: '⚡ Insomnia Legend', xp: 300, desc: "Kuasai 8 kafe dosis kafein tinggi Malang!" }
-        ]
-      },
-      {
-        id: "nugas_warrior",
-        title: "Nugas Warrior",
-        icon: "fa-laptop-code",
-        key: "nugas_views",
-        tiers: [
-          { level: "Beginner", target: 2, title: "💻 Skripsi Newbie", xp: 50, desc: "Cek detail 2 kafe kategori Nugas & Quiet Zone." },
-          { level: "Pro", target: 5, title: "💻 Tugas Akhir Fighter", xp: 120, desc: "Kunjungi 5 kafe berfasilitas Wi-Fi kencang & colokan." },
-          { level: "Expert", target: 8, title: "💻 Nugas Grandmaster", xp: 250, desc: "Temukan 8 spot nugas terbaik Malang." }
-        ]
-      },
-      {
-        id: "malang_explorer",
-        title: "Malang Explorer",
-        icon: "fa-map-marked-alt",
-        key: "map_pins",
-        tiers: [
-          { level: "Beginner", target: 3, title: "📍 Malang Tourist", xp: 50, desc: "Klik 3 pin lokasi kafe di peta nongkrongin.id." },
-          { level: "Pro", target: 6, title: "📍 Malang Navigator", xp: 120, desc: "Klik 6 pin kafe di peta." },
-          { level: "Expert", target: 10, title: "📍 Malang Local Sepuh", xp: 250, desc: "Klik 10 pin kafe di seluruh pelosok Malang." }
-        ]
-      },
-      {
-        id: "cafe_collector",
-        title: "Cafe Collector",
-        icon: "fa-bookmark",
-        key: "wishlist_count",
-        tiers: [
-          { level: "Beginner", target: 2, title: "❤️ Bookmark Newbie", xp: 50, desc: "Simpan 2 kafe ke daftar Wishlist tersimpan." },
-          { level: "Pro", target: 5, title: "❤️ Cafe Curator", xp: 120, desc: "Simpan 5 kafe ke daftar Wishlist." },
-          { level: "Expert", target: 8, title: "❤️ Ultimate Collector", xp: 250, desc: "Simpan 8 kafe favorit ke daftar tersimpan." }
-        ]
-      }
-    ];
-
-    let userStats = JSON.parse(localStorage.getItem('nongkrongin_user_stats') || JSON.stringify({
-      xp: 0,
-      equippedTitle: "🍵 Matcha Beginner",
-      matcha_views: 0,
-      americano_views: 0,
-      latte_views: 0,
-      double_shot_views: 0,
-      nugas_views: 0,
-      map_pins: 0,
-      wishlist_count: 0,
-      filter_24h: 0,
-      unlockedTiers: []
-    }));
-
-    let wishlist = JSON.parse(localStorage.getItem('nongkrongin_wishlist') || '[]');
-    let mapInstance = null;
-
-    function switchTab(tabId) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-link-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.bottom-item').forEach(b => b.classList.remove('active'));
-
-      const targetPage = document.getElementById('page-' + tabId);
-      if (targetPage) targetPage.classList.add('active');
-
-      document.querySelectorAll(`[data-tab="${tabId}"]`).forEach(b => b.classList.add('active'));
-
-      if (tabId === 'map') {
-        setTimeout(() => {
-          if (!mapInstance) {
-            initMap();
-          } else {
-            mapInstance.invalidateSize();
-          }
-        }, 100);
-      } else if (tabId === 'gallery') {
-        renderGallery();
-      } else if (tabId === 'recommend') {
-        renderRecommendations();
-      } else if (tabId === 'wishlist') {
-        renderWishlist();
-      } else if (tabId === 'achievements') {
-        renderTieredAchievements();
-      }
-    }
-
-    function renderGrid(cafes) {
-      const grid = document.getElementById('cafeGrid');
-      if (!grid) return;
-
-      if (cafes.length === 0) {
-        grid.innerHTML = `
-          <div style="grid-column: 1/-1; text-align:center; padding: 40px; color: var(--text-muted);">
-            <i class="fas fa-search" style="font-size: 2.5rem; margin-bottom: 12px; color: var(--brand-primary);"></i>
-            <p style="font-weight:700;">Kafe tidak ditemukan</p>
-            <p style="font-size:0.85rem;">Coba gunakan kata kunci pencarian atau filter lain.</p>
-          </div>
-        `;
-        return;
-      }
-
-      grid.innerHTML = cafes.map(c => {
-        const isSaved = wishlist.includes(c.id);
-        const crowdClass = c.crowd === 'sepi' ? 'bg-sepi' : (c.crowd === 'sedang' ? 'bg-sedang' : 'bg-ramai');
-        const crowdLabel = c.crowd === 'sepi' ? '🟢 Sepi (Fokus)' : (c.crowd === 'sedang' ? '🟡 Lumayan' : '🟠 Ramai');
-
-        return `
-          <div class="cafe-card" onclick="openDetail(${c.id})">
-            <div class="card-img-wrapper">
-              <img src="${c.img}" alt="${c.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600'">
-              <button class="wish-icon ${isSaved ? 'active' : ''}" onclick="toggleWish(event, ${c.id})" title="Simpan Kafe">
-                <i class="${isSaved ? 'fas' : 'far'} fa-heart"></i>
-              </button>
-              <span class="area-badge"><i class="fas fa-map-marker-alt"></i> ${c.area}</span>
-            </div>
-
-            <div class="cafe-info">
-              <div class="cafe-title">
-                <span>${c.name}</span>
-                <span class="rating-badge"><i class="fas fa-star"></i> ${c.rating}</span>
-              </div>
-
-              <div class="cafe-meta">
-                <span class="crowd-status ${crowdClass}">${crowdLabel}</span>
-                <span><i class="fas fa-wifi"></i> ${c.wifi}</span>
-              </div>
-
-              <div class="cafe-tags">
-                ${c.tags.slice(0, 3).map(t => `<span class="mini-tag">${t}</span>`).join('')}
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function filterCategory(cat, btnElement) {
-      document.querySelectorAll('.quick-tags .tag-btn').forEach(b => b.classList.remove('active'));
-      if (btnElement) btnElement.classList.add('active');
-
-      let filtered = cafesData;
-      if (cat === 'sepi') {
-        filtered = cafesData.filter(c => c.crowd === 'sepi');
-      } else if (cat === 'formal') {
-        filtered = cafesData.filter(c => c.category === 'formal');
-      } else if (cat === 'modern') {
-        filtered = cafesData.filter(c => c.category === 'modern');
-      } else if (cat === '24jam') {
-        filtered = cafesData.filter(c => c.is24h);
-      }
-
-      renderGrid(filtered);
-    }
-
-    function handleSearch() {
-      const q = document.getElementById('searchInput').value.toLowerCase().trim();
-      const filtered = cafesData.filter(c => 
-        c.name.toLowerCase().includes(q) ||
-        c.area.toLowerCase().includes(q) ||
-        c.desc.toLowerCase().includes(q) ||
-        c.tags.some(t => t.toLowerCase().includes(q))
-      );
-      renderGrid(filtered);
-    }
-
-    function toggleWish(event, id) {
-      event.stopPropagation();
-      const idx = wishlist.indexOf(id);
-      if (idx > -1) {
-        wishlist.splice(idx, 1);
-        showToast('Tersimpan Dihapus', 'Kafe telah dihapus dari wishlist', 'fa-heart-broken');
-      } else {
-        wishlist.push(id);
-        showToast('Tersimpan!', 'Kafe berhasil ditambahkan ke wishlist', 'fa-heart');
-      }
-
-      localStorage.setItem('nongkrongin_wishlist', JSON.stringify(wishlist));
-      updateWishlistBadge();
-      
-      userStats.wishlist_count = wishlist.length;
-      trackProgress('wishlist_count', 0);
-
-      renderGrid(cafesData);
-      if (document.getElementById('page-wishlist').classList.contains('active')) {
-        renderWishlist();
-      }
-    }
-
-    function updateWishlistBadge() {
-      const badge = document.getElementById('wishlistBadge');
-      if (badge) badge.innerText = wishlist.length;
-    }
-
-    function renderWishlist() {
-      const grid = document.getElementById('wishlistGrid');
-      if (!grid) return;
-
-      const savedCafes = cafesData.filter(c => wishlist.includes(c.id));
-      if (savedCafes.length === 0) {
-        grid.innerHTML = `
-          <div style="grid-column:1/-1; text-align:center; padding: 40px; color: var(--text-muted);">
-            <i class="far fa-heart" style="font-size: 3rem; margin-bottom: 12px; color: #dc2626;"></i>
-            <p style="font-weight:800; font-size:1.1rem;">Belum ada kafe tersimpan</p>
-            <p style="font-size:0.88rem; margin-top:4px;">Klik ikon hati pada kafe favoritmu untuk menyimpannya di sini.</p>
-          </div>
-        `;
-        return;
-      }
-      renderGrid(savedCafes);
-    }
-
-    function initMap() {
-      const mapElem = document.getElementById('map');
-      if (!mapElem) return;
-
-      mapInstance = L.map('map').setView([-7.9526, 112.6144], 13);
-      
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(mapInstance);
-
-      cafesData.forEach(c => {
-        const marker = L.marker([c.lat, c.lng]).addTo(mapInstance);
-        marker.bindPopup(`
-          <div style="font-family:'Plus Jakarta Sans', sans-serif;">
-            <b style="color:#7b3f00;">${c.name}</b><br>
-            <span style="font-size:0.8rem;">${c.area}</span><br>
-            <button onclick="openDetail(${c.id})" style="margin-top:6px; background:#7b3f00; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.75rem;">Lihat Detail</button>
-          </div>
-        `);
-
-        marker.on('click', () => {
-          trackProgress('map_pins', 1);
-        });
-      });
-
-      renderMapSidebar();
-    }
-
-    function renderMapSidebar() {
-      const container = document.getElementById('mapSidebarList');
-      if (!container) return;
-
-      container.innerHTML = cafesData.map(c => `
-        <div class="map-sidebar-card" onclick="openDetail(${c.id})">
-          <img src="${c.img}" alt="${c.name}">
-          <div>
-            <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-main);">${c.name}</h4>
-            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;"><i class="fas fa-map-marker-alt"></i> ${c.area}</p>
-            <span style="font-size:0.75rem; font-weight:700; color:var(--brand-primary); margin-top:4px; display:inline-block;"><i class="fas fa-wifi"></i> ${c.wifi}</span>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function renderGallery() {
-      const container = document.getElementById('galleryGrid');
-      if (!container) return;
-
-      container.innerHTML = cafesData.slice(0, 8).map(c => `
-        <div style="position:relative; border-radius:var(--radius-md); overflow:hidden; height:220px; cursor:pointer; border:1px solid var(--border-color);" onclick="openDetail(${c.id})">
-          <img src="${c.img}" alt="${c.name}" style="width:100%; height:100%; object-fit:cover;">
-          <div style="position:absolute; inset:0; background:linear-gradient(to top, rgba(43,30,22,0.88), transparent 60%); display:flex; flex-direction:column; justify-content:flex-end; padding:12px; color:white;">
-            <strong style="font-size:0.95rem;">${c.name}</strong>
-            <span style="font-size:0.8rem; opacity:0.9;">${c.area}</span>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function renderRecommendations() {
-      const container = document.getElementById('recommendList');
-      if (!container) return;
-
-      const recommended = cafesData.filter(c => c.category === 'formal' || c.is24h);
-      container.innerHTML = recommended.map(c => `
-        <div style="background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border-color); padding:20px; margin-bottom:16px; display:flex; gap:20px; align-items:center;">
-          <img src="${c.img}" alt="${c.name}" style="width:130px; height:130px; border-radius:var(--radius-md); object-fit:cover;">
-          <div style="flex:1;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-              <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main);">${c.name}</h3>
-              <span class="rating-badge"><i class="fas fa-star"></i> ${c.rating}</span>
-            </div>
-            <p style="font-size:0.85rem; color:var(--text-muted); margin:4px 0 10px 0;"><i class="fas fa-map-marker-alt"></i> ${c.area}</p>
-            <p style="font-size:0.9rem; color:var(--text-main); line-height:1.5; margin-bottom:12px;">${c.desc}</p>
-            <button onclick="openDetail(${c.id})" style="background:var(--brand-primary); color:white; border:none; padding:8px 18px; border-radius:var(--radius-pill); font-weight:700; cursor:pointer; font-size:0.85rem;">Lihat Selengkapnya</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function renderBadgeSubnav() {
-      const container = document.getElementById('badgeSubnavItems');
-      if (!container) return;
-
-      const mainDrinkIds = ["matcha_lover", "americano_lover", "latte_lover", "double_shot_depression"];
-
-      container.innerHTML = mainDrinkIds.map(catId => {
-        const cat = badgeCategories.find(b => b.id === catId);
-        const currentCount = userStats[cat.key] || 0;
-
-        let activeTier = null;
-        for (let i = cat.tiers.length - 1; i >= 0; i--) {
-          const tierKey = `${cat.id}_${cat.tiers[i].level.toLowerCase()}`;
-          if (userStats.unlockedTiers.includes(tierKey) || currentCount >= cat.tiers[i].target) {
-            activeTier = cat.tiers[i];
-            break;
-          }
-        }
-
-        const isEquipped = activeTier && userStats.equippedTitle === activeTier.title;
-        const highestUnlockedLevel = activeTier ? activeTier.level : "LOCKED";
-
-        let statusClass = isEquipped ? 'equipped' : (activeTier ? 'unlocked' : 'locked');
-        let levelTagClass = activeTier ? `level-tag-${activeTier.level.toLowerCase()}` : '';
-
-        return `
-          <button class="drink-badge-pill ${statusClass}" onclick="handleBadgeSubnavClick('${cat.id}')">
-            <span>${cat.title}</span>
-            ${activeTier ? `<span class="level-tag-mini ${levelTagClass}">${highestUnlockedLevel}</span>` : '<i class="fas fa-lock" style="font-size:0.7rem;"></i>'}
-          </button>
-        `;
-      }).join('');
-    }
-
-    function handleBadgeSubnavClick(catId) {
-      const cat = badgeCategories.find(b => b.id === catId);
-      const currentCount = userStats[cat.key] || 0;
-
-      let highestUnlocked = null;
-      for (let i = cat.tiers.length - 1; i >= 0; i--) {
-        const tierKey = `${cat.id}_${cat.tiers[i].level.toLowerCase()}`;
-        if (userStats.unlockedTiers.includes(tierKey) || currentCount >= cat.tiers[i].target) {
-          highestUnlocked = cat.tiers[i];
-          break;
-        }
-      }
-
-      if (highestUnlocked) {
-        equipJulukan(highestUnlocked.title);
-      } else {
-        switchTab('achievements');
-        showToast(`Misi ${cat.title}`, `${cat.tiers[0].desc} (${currentCount}/${cat.tiers[0].target})`, cat.icon);
-      }
-    }
-
-    function equipJulukan(julukanTitle) {
-      userStats.equippedTitle = julukanTitle;
-      localStorage.setItem('nongkrongin_user_stats', JSON.stringify(userStats));
-      updateProfileHeader();
-      renderTieredAchievements();
-      renderBadgeSubnav();
-      showToast('Julukan Diperbarui!', `Kamu memakai badge: <b>${julukanTitle}</b>`, 'fa-tag');
-    }
-
-    function updateProfileHeader() {
-      const titleBadge = document.getElementById('navTitleBadge');
-      const profileTitle = document.getElementById('profileEquippedTitle');
-      const xpDisplay = document.getElementById('totalXpDisplay');
-      const rankTitle = document.getElementById('userRankTitle');
-      const xpFill = document.getElementById('xpProgressFill');
-
-      const currentTitle = userStats.equippedTitle || "🍵 Matcha Beginner";
-      
-      if (titleBadge) titleBadge.innerHTML = `<i class="fas fa-certificate"></i> ${currentTitle}`;
-      if (profileTitle) profileTitle.innerHTML = `<i class="fas fa-tag"></i> ${currentTitle}`;
-
-      const currentXp = userStats.xp || 0;
-      const level = Math.floor(currentXp / 200) + 1;
-      const progressInLevel = (currentXp % 200) / 200 * 100;
-
-      if (rankTitle) rankTitle.innerText = `Level ${level} — Penjelajah nongkrongin.id`;
-      if (xpDisplay) xpDisplay.innerText = `${currentXp} XP`;
-      if (xpFill) xpFill.style.width = `${Math.min(progressInLevel, 100)}%`;
-    }
-
-    function trackProgress(key, amount) {
-      if (!userStats[key]) userStats[key] = 0;
-      userStats[key] += amount;
-      localStorage.setItem('nongkrongin_user_stats', JSON.stringify(userStats));
-      checkLevelTriggers();
-    }
-
-    function checkLevelTriggers() {
-      badgeCategories.forEach(cat => {
-        const currentCount = userStats[cat.key] || 0;
-
-        cat.tiers.forEach(tier => {
-          const tierKey = `${cat.id}_${tier.level.toLowerCase()}`;
-          const wasUnlocked = userStats.unlockedTiers.includes(tierKey);
-
-          if (currentCount >= tier.target && !wasUnlocked) {
-            userStats.unlockedTiers.push(tierKey);
-            userStats.xp += tier.xp;
-            localStorage.setItem('nongkrongin_user_stats', JSON.stringify(userStats));
-
-            showToast(`LEVEL UNLOCKED! (${tier.level})`, `Kamu membuka julukan <b>${tier.title}</b> (+${tier.xp} XP)`, cat.icon);
-          }
-        });
-      });
-
-      renderTieredAchievements();
-      renderBadgeSubnav();
-      updateProfileHeader();
-    }
-
-    function renderTieredAchievements() {
-      const container = document.getElementById('tieredAchievementsContainer');
-      if (!container) return;
-
-      container.innerHTML = badgeCategories.map(cat => {
-        const currentCount = userStats[cat.key] || 0;
-
-        const tiersMarkup = cat.tiers.map(tier => {
-          const tierKey = `${cat.id}_${tier.level.toLowerCase()}`;
-          const isUnlocked = userStats.unlockedTiers.includes(tierKey) || currentCount >= tier.target;
-          const isEquipped = userStats.equippedTitle === tier.title;
-          const tagClass = `level-tag-${tier.level.toLowerCase()}`;
-
-          return `
-            <div class="tier-item ${isUnlocked ? 'unlocked' : 'locked'}">
-              <div style="flex:1;">
-                <div style="display:flex; align-items:center; gap:8px;">
-                  <strong style="font-size:0.92rem; color:var(--text-main);">${tier.title}</strong>
-                  <span class="level-tag-mini ${tagClass}">${tier.level}</span>
-                  <span style="font-size:0.75rem; font-weight:800; color:var(--brand-primary);">(+${tier.xp} XP)</span>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full flex flex-col transition-colors duration-200">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-30 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+                        <i class="fa-solid font-bold text-xl fa-wallet"></i>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-600 to-pink-500 bg-clip-text text-transparent">SanguKu</span>
+                        <span class="hidden sm:inline-block text-xs font-semibold px-2 py-0.5 ml-2 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300">Edition Remaja 🚀</span>
+                    </div>
                 </div>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">${tier.desc}</p>
-                <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-top:4px;">
-                  Progress: ${Math.min(currentCount, tier.target)} / ${tier.target}
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-3">
+                    <!-- Reset Data Button -->
+                    <button onclick="confirmResetData()" title="Reset Data" class="p-2 text-slate-500 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                    <!-- Dark Mode Toggle -->
+                    <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2 text-slate-500 hover:text-indigo-600 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition">
+                        <i id="themeIcon" class="fa-solid fa-moon"></i>
+                    </button>
+                    <!-- Quick Add Modal Trigger -->
+                    <button onclick="openTransactionModal()" class="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-medium px-4 py-2 rounded-xl shadow-md hover:shadow-lg transition transform active:scale-95 text-sm">
+                        <i class="fa-solid fa-plus"></i>
+                        <span class="hidden sm:inline">Catat Pengeluaran</span>
+                    </button>
                 </div>
-              </div>
-
-              <div>
-                ${isUnlocked ? `
-                  <button class="equip-btn ${isEquipped ? 'active' : ''}" onclick="equipJulukan('${tier.title}')">
-                    <i class="fas ${isEquipped ? 'fa-check' : 'fa-tag'}"></i> ${isEquipped ? 'Dipakai' : 'Gunakan'}
-                  </button>
-                ` : `
-                  <button class="equip-btn" disabled style="opacity:0.5; cursor:not-allowed; background:var(--bg-surface); color:var(--text-muted);">
-                    <i class="fas fa-lock"></i> Terkunci
-                  </button>
-                `}
-              </div>
             </div>
-          `;
-        }).join('');
-
-        return `
-          <div class="achievement-card-tiered">
-            <div class="achievement-card-header">
-              <div class="achievement-icon-wrapper">
-                <i class="fas ${cat.icon}"></i>
-              </div>
-              <div>
-                <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main);">${cat.title}</h3>
-                <p style="font-size:0.82rem; color:var(--text-muted);">Tingkatkan progres dari Beginner hingga Expert</p>
-              </div>
-            </div>
-
-            <div class="level-tiers-list">
-              ${tiersMarkup}
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function showToast(title, message, icon = 'fa-trophy') {
-      const container = document.getElementById('toastContainer');
-      if (!container) return;
-
-      const toast = document.createElement('div');
-      toast.className = 'achievement-toast';
-      toast.innerHTML = `
-        <div style="width:38px; height:38px; border-radius:50%; background:#7b3f00; color:white; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;">
-          <i class="fas ${icon}"></i>
         </div>
-        <div>
-          <h4 style="font-size:0.9rem; font-weight:800; color:#d08851; margin-bottom:2px;">${title}</h4>
-          <p style="font-size:0.8rem; color:#f8fafc; line-height:1.3;">${message}</p>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- Top Banner / Health Status -->
+        <div id="healthBanner" class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="z-10">
+                <div class="flex items-center gap-2 text-indigo-100 text-xs font-semibold tracking-wider uppercase mb-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    Status Keuangan Bulan Ini
+                </div>
+                <h1 id="healthTitle" class="text-xl sm:text-2xl font-bold">Halo Remaja Bijak! 👋</h1>
+                <p id="healthDesc" class="text-sm text-indigo-100 mt-1 max-w-xl">Ayo atur sangu kamu dengan rasio yang pas biar bisa tetep jajan, nongkrong, dan nabung barang impian!</p>
+            </div>
+            <div class="z-10 flex items-center gap-3 bg-white/10 backdrop-blur-md px-4 py-3 rounded-xl border border-white/20 w-full md:w-auto justify-between">
+                <div>
+                    <p class="text-xs text-indigo-100">Sisa Sangu Total</p>
+                    <p id="totalRemainingText" class="text-lg font-bold">Rp 0</p>
+                </div>
+                <div id="healthBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-400 text-slate-900">
+                    Aman Banget 😎
+                </div>
+            </div>
+            <!-- Decorative circle -->
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
         </div>
-      `;
 
-      container.appendChild(toast);
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transition = 'opacity 0.3s ease';
-        setTimeout(() => toast.remove(), 300);
-      }, 3500);
-    }
+        <!-- Grid Section 1: Ratio Setup & Budget Limits -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Card 1: Pengaturan Sangu & Rasio -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-indigo-600 dark:text-indigo-400"></i>
+                            <h2 class="font-bold text-slate-800 dark:text-slate-100">Setting Sangu & Rasio</h2>
+                        </div>
+                        <button onclick="toggleEditRatioModal()" class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-semibold">
+                            Ubah Rasio
+                        </button>
+                    </div>
 
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'dark-mocha' ? 'warm-coffee' : 'dark-mocha';
-      document.documentElement.setAttribute('data-theme', next);
+                    <!-- Input Sangu Bulanan -->
+                    <div class="mb-5">
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Total Sangu Bulanan (Rp)</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 font-medium text-sm">Rp</span>
+                            <input type="number" id="monthlyAllowanceInput" placeholder="Contoh: 500000" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none font-bold text-slate-800 dark:text-slate-100 text-lg transition">
+                        </div>
+                    </div>
 
-      const btnIcon = document.querySelector('#themeToggleBtn i');
-      if (btnIcon) {
-        btnIcon.className = next === 'dark-mocha' ? 'fas fa-sun' : 'fas fa-moon';
-      }
-    }
+                    <!-- Selected Ratio Preset Badge -->
+                    <div class="p-3 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-100 dark:border-slate-800 mb-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-slate-500 dark:text-slate-400">Preset Aktif:</span>
+                            <span id="presetLabel" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950 px-2.5 py-1 rounded-lg">50 / 30 / 20 (Standard Remaja)</span>
+                        </div>
+                        <!-- Formula Display -->
+                        <div class="mt-3 grid grid-cols-3 gap-2 text-center text-xs">
+                            <div class="p-2 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400">
+                                <p class="font-bold" id="ratioKebLabel">50%</p>
+                                <p class="text-[10px] opacity-80">Kebutuhan</p>
+                            </div>
+                            <div class="p-2 rounded-lg bg-pink-50 dark:bg-pink-950/40 text-pink-600 dark:text-pink-400">
+                                <p class="font-bold" id="ratioKeiLabel">30%</p>
+                                <p class="text-[10px] opacity-80">Keinginan</p>
+                            </div>
+                            <div class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+                                <p class="font-bold" id="ratioTabLabel">20%</p>
+                                <p class="text-[10px] opacity-80">Tabungan</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    function openDetail(id) {
-      const c = cafesData.find(item => item.id === id);
-      if (!c) return;
-
-      if (c.tags.some(t => t.toLowerCase().includes('matcha'))) trackProgress('matcha_views', 1);
-      if (c.tags.some(t => t.toLowerCase().includes('americano'))) trackProgress('americano_views', 1);
-      if (c.tags.some(t => t.toLowerCase().includes('latte'))) trackProgress('latte_views', 1);
-      if (c.tags.some(t => t.toLowerCase().includes('double shot'))) trackProgress('double_shot_views', 1);
-      if (c.category === 'formal' || c.tags.includes('Quiet Zone')) trackProgress('nugas_views', 1);
-
-      const isSaved = wishlist.includes(c.id);
-      document.getElementById('modalBody').innerHTML = `
-        <img class="modal-header-img" src="${c.img}" alt="${c.name}">
-        <div class="modal-content">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 8px;">
-            <h2 style="font-size:1.4rem; font-weight:800; color:var(--text-main);">${c.name}</h2>
-            <span class="rating-badge" style="font-size:0.9rem; padding:4px 10px;"><i class="fas fa-star"></i> ${c.rating}</span>
-          </div>
-
-          <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:12px;">
-            <i class="fas fa-map-marker-alt" style="color:var(--brand-primary)"></i> ${c.area}
-          </p>
-
-          <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px;">
-            ${c.tags.map(t => `<span class="mini-tag" style="background:var(--brand-light); color:var(--brand-primary); font-weight:700;">${t}</span>`).join('')}
-          </div>
-
-          <p style="color:var(--text-main); font-size:0.95rem; line-height:1.6; margin-bottom:20px;">${c.desc}</p>
-
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; background:var(--bg-surface); padding:14px; border-radius:var(--radius-md);">
-            <div>
-              <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">KECEPATAN WIFI</span>
-              <p style="font-weight:800; color:var(--brand-primary);"><i class="fas fa-wifi"></i> ${c.wifi}</p>
+                <button onclick="saveAllowance()" class="w-full bg-slate-800 dark:bg-slate-700 hover:bg-slate-900 dark:hover:bg-slate-600 text-white font-medium py-2.5 rounded-xl transition text-sm">
+                    Simpan Sangu Bulanan
+                </button>
             </div>
-            <div>
-              <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">ESTIMASI HARGA</span>
-              <p style="font-weight:800; color:var(--text-main);"><i class="fas fa-tag"></i> ${c.price}</p>
-            </div>
-          </div>
 
-          <div style="display:flex; gap:10px; margin-top:20px;">
-            <button onclick="toggleWish(event, ${c.id}); openDetail(${c.id});" style="flex:1; padding:12px; background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-pill); font-weight:700; cursor:pointer; color:var(--text-main);">
-              <i class="${isSaved ? 'fas' : 'far'} fa-heart" style="color:#dc2626;"></i> ${isSaved ? 'Tersimpan' : 'Simpan'}
+            <!-- Card 2 & 3 Span: Category Progress Gauges -->
+            <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-indigo-600 dark:text-indigo-400"></i>
+                        <h2 class="font-bold text-slate-800 dark:text-slate-100">Alokasi vs Pengeluaran Riil</h2>
+                    </div>
+                    <span class="text-xs text-slate-400">Sistem Rasio Keuangan</span>
+                </div>
+
+                <!-- 3 Category Progress Bars -->
+                <div class="space-y-4">
+                    <!-- 1. Kebutuhan -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800">
+                        <div class="flex justify-between items-center mb-1 text-sm">
+                            <span class="font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                                Kebutuhan <span class="text-xs text-slate-400 font-normal">(Transport, Makan, Pulsa, Tugas)</span>
+                            </span>
+                            <span id="statKebText" class="font-bold text-slate-800 dark:text-slate-100 text-xs sm:text-sm">Rp 0 / Rp 0</span>
+                        </div>
+                        <div class="w-full bg-slate-200 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden mt-2">
+                            <div id="barKeb" class="bg-blue-500 h-full transition-all duration-500 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-between items-center mt-1 text-[11px] text-slate-500">
+                            <span id="percentKeb">0% terpakai</span>
+                            <span id="remKeb">Sisa: Rp 0</span>
+                        </div>
+                    </div>
+
+                    <!-- 2. Keinginan -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800">
+                        <div class="flex justify-between items-center mb-1 text-sm">
+                            <span class="font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-pink-500"></span>
+                                Keinginan <span class="text-xs text-slate-400 font-normal">(Hangout, Jajan, Game, Hobi)</span>
+                            </span>
+                            <span id="statKeiText" class="font-bold text-slate-800 dark:text-slate-100 text-xs sm:text-sm">Rp 0 / Rp 0</span>
+                        </div>
+                        <div class="w-full bg-slate-200 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden mt-2">
+                            <div id="barKei" class="bg-pink-500 h-full transition-all duration-500 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-between items-center mt-1 text-[11px] text-slate-500">
+                            <span id="percentKei">0% terpakai</span>
+                            <span id="remKei">Sisa: Rp 0</span>
+                        </div>
+                    </div>
+
+                    <!-- 3. Tabungan -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800">
+                        <div class="flex justify-between items-center mb-1 text-sm">
+                            <span class="font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                                Tabungan & Impian <span class="text-xs text-slate-400 font-normal">(Barang Impian & Emergency)</span>
+                            </span>
+                            <span id="statTabText" class="font-bold text-slate-800 dark:text-slate-100 text-xs sm:text-sm">Rp 0 / Rp 0</span>
+                        </div>
+                        <div class="w-full bg-slate-200 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden mt-2">
+                            <div id="barTab" class="bg-emerald-500 h-full transition-all duration-500 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-between items-center mt-1 text-[11px] text-slate-500">
+                            <span id="percentTab">0% terkumpul</span>
+                            <span id="remTab">Terkumpul: Rp 0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Grid Section 2: Visual Chart & Dream Wishlist -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Visual Chart -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center">
+                <div class="w-full flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-donut text-indigo-500"></i> Diagram Pengeluaran
+                    </h3>
+                </div>
+                <div class="relative w-48 h-48 sm:w-56 sm:h-56">
+                    <canvas id="budgetChart"></canvas>
+                </div>
+                <p class="text-xs text-slate-400 text-center mt-4">Grafik perbandingan pengeluaran ril dari tiap pos rasio</p>
+            </div>
+
+            <!-- Dream Wishlist (Target Impian Remaja) -->
+            <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-bullseye text-pink-500"></i>
+                            <h2 class="font-bold text-slate-800 dark:text-slate-100">Wishlist & Target Impian Remaja</h2>
+                        </div>
+                        <button onclick="openWishlistModal()" class="text-xs bg-pink-50 dark:bg-pink-950/60 text-pink-600 dark:text-pink-300 hover:bg-pink-100 font-semibold px-3 py-1.5 rounded-lg border border-pink-200 dark:border-pink-800 transition">
+                            <i class="fa-solid fa-plus mr-1"></i> Tambah Target
+                        </button>
+                    </div>
+
+                    <!-- Wishlist Cards Container -->
+                    <div id="wishlistContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-60 overflow-y-auto pr-1">
+                        <!-- Dynamic items will be injected here -->
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-lightbulb text-sm"></i>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300">
+                        <strong class="text-indigo-600 dark:text-indigo-400">Tips Impian:</strong> Tabungan dari rasio bulananmu akan otomatis memotong sisa waktu estimasi membeli barang wishlist kamu!
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Grid Section 3: Transactions & History -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
+                <div>
+                    <h2 class="font-bold text-lg text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-receipt text-indigo-600 dark:text-indigo-400"></i> Catatan Transaksi Bulan Ini
+                    </h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Kelola dan pantau seluruh transaksi agar tidak overbudget</p>
+                </div>
+
+                <!-- Filters & Actions -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                        <input type="text" id="searchInput" onkeyup="filterTransactions()" placeholder="Cari transaksi..." class="pl-8 pr-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-36 sm:w-48">
+                    </div>
+
+                    <select id="categoryFilter" onchange="filterTransactions()" class="py-1.5 px-3 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="ALL">Semua Kategori</option>
+                        <option value="KEBUTUHAN">Kebutuhan</option>
+                        <option value="KEINGINAN">Keinginan</option>
+                        <option value="TABUNGAN">Tabungan</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Transactions Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead>
+                        <tr class="text-xs font-semibold uppercase bg-slate-50 dark:bg-slate-900/80 text-slate-500 border-y border-slate-200 dark:border-slate-700">
+                            <th class="py-3 px-4">Tanggal</th>
+                            <th class="py-3 px-4">Keterangan / Item</th>
+                            <th class="py-3 px-4">Kategori Rasio</th>
+                            <th class="py-3 px-4">Metode Bayar</th>
+                            <th class="py-3 px-4 text-right">Nominal</th>
+                            <th class="py-3 px-4 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                        <!-- Dynamic transaction rows will be rendered here -->
+                    </tbody>
+                </table>
+                <!-- Empty state -->
+                <div id="emptyTransactionState" class="hidden text-center py-10">
+                    <div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-400 flex items-center justify-center mx-auto mb-2">
+                        <i class="fa-solid fa-folder-open text-xl"></i>
+                    </div>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm">Belum ada transaksi tercatat.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Teenager Financial Literacy & Smart Tips -->
+        <div class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-2xl p-6 shadow-xl relative overflow-hidden">
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 text-pink-400 text-xs font-bold uppercase tracking-wider mb-2">
+                    <i class="fa-solid fa-graduation-cap"></i> Edukasi Finansial Remaja
+                </div>
+                <h2 class="text-xl font-bold mb-4">Kenapa Sih Rasio Sangu Penting Buat Kamu? 🤔</h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-indigo-400 transition">
+                        <div class="text-indigo-400 font-bold text-lg mb-1">1. Anti Kanker (Kantong Kering)</div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Banyak remaja kehabisan uang di minggu ke-2 karena jajan berlebihan. Dengan menyisihkan 50% untuk kebutuhan utama (makan/ongkos), kamu dijamin aman sampai akhir bulan!
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-pink-400 transition">
+                        <div class="text-pink-400 font-bold text-lg mb-1">2. Tetap Boleh Hangout!</div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Nabung bukan berarti nggak boleh jajan boba atau bioskop. Porsi 30% Keinginan itu khusus disediakan buat bikin kamu seneng tanpa rasa bersalah.
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-emerald-400 transition">
+                        <div class="text-emerald-400 font-bold text-lg mb-1">3. Wujudkan Barang Impian</div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Punya impian beli sepatu baru, tiket konser, atau gadget? Dengan konsisten menyisihkan 20% Tabungan, kamu bisa beli sendiri tanpa bebani orang tua!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL 1: Add/Edit Transaction -->
+    <div id="transactionModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 relative animate-in fade-in zoom-in duration-200">
+            <button onclick="closeTransactionModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <i class="fa-solid fa-xmark text-lg"></i>
             </button>
-            <a href="https://maps.google.com/?q=${c.lat},${c.lng}" target="_blank" style="flex:2; text-align:center; padding:12px; background:var(--brand-primary); color:white; text-decoration:none; border-radius:var(--radius-pill); font-weight:700;">
-              <i class="fas fa-directions"></i> Petunjuk Arah
-            </a>
-          </div>
+            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square text-indigo-600"></i> Catat Pengeluaran Baru
+            </h3>
+
+            <form id="transactionForm" onsubmit="handleSaveTransaction(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Nama Transaksi / Item</label>
+                    <input type="text" id="txName" required placeholder="misal: Makan Siang Kantin / Es Kopi" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Nominal (Rp)</label>
+                        <input type="number" id="txAmount" required placeholder="15000" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Tanggal</label>
+                        <input type="date" id="txDate" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Pos Rasio Keuangan</label>
+                    <select id="txCategory" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                        <option value="KEBUTUHAN">🟦 Kebutuhan (Transport, Makan, Tugas, Pulsa)</option>
+                        <option value="KEINGINAN">🟥 Keinginan (Hangout, Jajan, Game, Hobi)</option>
+                        <option value="TABUNGAN">🟩 Tabungan / Masuk Wishlist</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Metode Pembayaran</label>
+                    <select id="txPayment" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
+                        <option value="Cash / Tunai">💵 Cash / Tunai</option>
+                        <option value="Gopay / ShopeePay / Dana">📱 E-Wallet (Gopay/Dana/Ovo)</option>
+                        <option value="Transfer Bank">💳 Bank / QRIS</option>
+                    </select>
+                </div>
+
+                <div class="pt-2 flex gap-2">
+                    <button type="button" onclick="closeTransactionModal()" class="w-1/2 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium text-sm hover:bg-slate-100 dark:hover:bg-slate-700">Batal</button>
+                    <button type="submit" class="w-1/2 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm shadow-md">Simpan Transaksi</button>
+                </div>
+            </form>
         </div>
-      `;
-      document.getElementById('modalOverlay').classList.add('active');
-    }
+    </div>
 
-    function closeModal(e) {
-      if (!e || e.target === document.getElementById('modalOverlay') || e.target.closest('.modal-close-btn')) {
-        document.getElementById('modalOverlay').classList.remove('active');
-      }
-    }
+    <!-- MODAL 2: Change Ratio Presets -->
+    <div id="ratioModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 relative">
+            <button onclick="toggleEditRatioModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-sliders text-indigo-600"></i> Pilih Preset Rasio Sangu
+            </h3>
 
-    document.addEventListener('DOMContentLoaded', () => {
-      renderGrid(cafesData);
-      updateWishlistBadge();
-      updateProfileHeader();
-      renderBadgeSubnav();
-      checkLevelTriggers();
-    });
-  </script>
+            <!-- Preset Options -->
+            <div class="space-y-3 mb-5">
+                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 cursor-pointer transition">
+                    <input type="radio" name="ratioPreset" value="STANDARD" checked class="mt-1 text-indigo-600">
+                    <div>
+                        <div class="font-bold text-sm text-slate-800 dark:text-slate-200">Standard Remaja (50% / 30% / 20%)</div>
+                        <p class="text-xs text-slate-500 mt-0.5">50% Kebutuhan, 30% Keinginan/Nongkrong, 20% Tabungan.</p>
+                    </div>
+                </label>
+
+                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 cursor-pointer transition">
+                    <input type="radio" name="ratioPreset" value="SAVER" class="mt-1 text-indigo-600">
+                    <div>
+                        <div class="font-bold text-sm text-slate-800 dark:text-slate-200">Mode Super Nabung (40% / 20% / 40%)</div>
+                        <p class="text-xs text-slate-500 mt-0.5">Cocok buat kamu yang lagi buru-buru kejar target wishlist mahal.</p>
+                    </div>
+                </label>
+
+                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 cursor-pointer transition">
+                    <input type="radio" name="ratioPreset" value="SOCIAL" class="mt-1 text-indigo-600">
+                    <div>
+                        <div class="font-bold text-sm text-slate-800 dark:text-slate-200">Mode Hangout Santai (50% / 40% / 10%)</div>
+                        <p class="text-xs text-slate-500 mt-0.5">Porsi main & hangout lebih besar, tapi tetep ada sisa tabungan.</p>
+                    </div>
+                </label>
+            </div>
+
+            <div class="flex gap-2">
+                <button type="button" onclick="toggleEditRatioModal()" class="w-1/2 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium text-sm">Batal</button>
+                <button type="button" onclick="applyRatioPreset()" class="w-1/2 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm">Terapkan Rasio</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Add Wishlist Item -->
+    <div id="wishlistModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 relative">
+            <button onclick="closeWishlistModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-star text-pink-500"></i> Tambah Target Impian Baru
+            </h3>
+
+            <form id="wishlistForm" onsubmit="handleSaveWishlist(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Nama Barang / Impian</label>
+                    <input type="text" id="wsName" required placeholder="misal: Sepatu Sneakers / Tiket Konser" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Harga Target (Rp)</label>
+                    <input type="number" id="wsTarget" required placeholder="350000" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Pilih Icon Emoji</label>
+                    <select id="wsEmoji" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm">
+                        <option value="👟">👟 Sepatu / Fashion</option>
+                        <option value="🎮">🎮 Gaming / Konsol</option>
+                        <option value="🎧">🎧 Audio / Gadget</option>
+                        <option value="🎟️">🎟️ Tiket Konser / Event</option>
+                        <option value="📚">📚 Buku / Laptop Sekolah</option>
+                        <option value="🚲">🚲 Sepeda / Hobi</option>
+                    </select>
+                </div>
+
+                <div class="pt-2 flex gap-2">
+                    <button type="button" onclick="closeWishlistModal()" class="w-1/2 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium text-sm">Batal</button>
+                    <button type="submit" class="w-1/2 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-700 text-white font-medium text-sm shadow-md">Simpan Wishlist</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Notification Toast Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        // Default Ratio Presets
+        const RATIO_PRESETS = {
+            STANDARD: { name: '50 / 30 / 20 (Standard Remaja)', keb: 0.50, kei: 0.30, tab: 0.20 },
+            SAVER: { name: '40 / 20 / 40 (Mode Super Nabung)', keb: 0.40, kei: 0.20, tab: 0.40 },
+            SOCIAL: { name: '50 / 40 / 10 (Mode Hangout Santai)', keb: 0.50, kei: 0.40, tab: 0.10 }
+        };
+
+        // App State
+        let state = {
+            monthlyAllowance: 600000,
+            activePresetKey: 'STANDARD',
+            transactions: [],
+            wishlist: []
+        };
+
+        let chartInstance = null;
+
+        function loadDataFromStorage() {
+            const saved = localStorage.getItem('sanguku_teen_data_v1');
+            if (saved) {
+                try {
+                    state = JSON.parse(saved);
+                } catch (e) {
+                    console.error('Error loading data', e);
+                    loadDefaultInitialData();
+                }
+            } else {
+                loadDefaultInitialData();
+            }
+        }
+
+        function saveDataToStorage() {
+            localStorage.setItem('sanguku_teen_data_v1', JSON.stringify(state));
+        }
+
+        function loadDefaultInitialData() {
+            state = {
+                monthlyAllowance: 500000,
+                activePresetKey: 'STANDARD',
+                transactions: [
+                    { id: 1, name: 'Transport Bus & Angkot', amount: 40000, date: getFormattedToday(0), category: 'KEBUTUHAN', payment: 'Cash / Tunai' },
+                    { id: 2, name: 'Makan Kantin Sekolah', amount: 75000, date: getFormattedToday(-1), category: 'KEBUTUHAN', payment: 'Cash / Tunai' },
+                    { id: 3, name: 'Nongkrong Boba + Popcorn', amount: 35000, date: getFormattedToday(-2), category: 'KEINGINAN', payment: 'Gopay / ShopeePay / Dana' },
+                    { id: 4, name: 'Beli Pulsa Kuota Belajar', amount: 50000, date: getFormattedToday(-3), category: 'KEBUTUHAN', payment: 'Gopay / ShopeePay / Dana' },
+                    { id: 5, name: 'Setor Tabungan Sepatu', amount: 50000, date: getFormattedToday(-4), category: 'TABUNGAN', payment: 'Transfer Bank' }
+                ],
+                wishlist: [
+                    { id: 1, name: 'Sepatu Sneakers Skate', target: 350000, emoji: '👟' },
+                    { id: 2, name: 'Headphone Bluetooth', target: 200000, emoji: '🎧' }
+                ]
+            };
+            saveDataToStorage();
+        }
+
+        function getFormattedToday(offsetDays = 0) {
+            const d = new Date();
+            d.setDate(d.getDate() + offsetDays);
+            return d.toISOString().split('T')[0];
+        }
+
+        function initTheme() {
+            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('themeIcon').className = 'fa-solid fa-sun';
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('themeIcon').className = 'fa-solid fa-moon';
+            }
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                document.getElementById('themeIcon').className = 'fa-solid fa-moon';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                document.getElementById('themeIcon').className = 'fa-solid fa-sun';
+            }
+            if (chartInstance) renderChart();
+        }
+
+        function formatRupiah(num) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num || 0);
+        }
+
+        function updateUI() {
+            const preset = RATIO_PRESETS[state.activePresetKey] || RATIO_PRESETS.STANDARD;
+            const totalAllowance = state.monthlyAllowance;
+
+            // Fill inputs
+            document.getElementById('monthlyAllowanceInput').value = totalAllowance;
+            document.getElementById('presetLabel').innerText = preset.name;
+            document.getElementById('ratioKebLabel').innerText = `${preset.keb * 100}%`;
+            document.getElementById('ratioKeiLabel').innerText = `${preset.kei * 100}%`;
+            document.getElementById('ratioTabLabel').innerText = `${preset.tab * 100}%`;
+
+            // Calculate budget allocation limits
+            const limitKeb = totalAllowance * preset.keb;
+            const limitKei = totalAllowance * preset.kei;
+            const limitTab = totalAllowance * preset.tab;
+
+            // Calculate spent amounts
+            let spentKeb = 0;
+            let spentKei = 0;
+            let spentTab = 0;
+
+            state.transactions.forEach(t => {
+                if (t.category === 'KEBUTUHAN') spentKeb += Number(t.amount);
+                if (t.category === 'KEINGINAN') spentKei += Number(t.amount);
+                if (t.category === 'TABUNGAN') spentTab += Number(t.amount);
+            });
+
+            const totalSpent = spentKeb + spentKei + spentTab;
+            const totalRemaining = totalAllowance - totalSpent;
+
+            // Update Remaining Total
+            document.getElementById('totalRemainingText').innerText = formatRupiah(totalRemaining);
+
+            // Health Status Logic
+            const healthBadge = document.getElementById('healthBadge');
+            const healthTitle = document.getElementById('healthTitle');
+            const healthDesc = document.getElementById('healthDesc');
+
+            if (spentKei > limitKei) {
+                healthBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-pink-500 text-white';
+                healthBadge.innerText = 'Keinginan Overbudget ⚠️';
+                healthTitle.innerText = 'Waspada Jajan Berlebih! 🛑';
+                healthDesc.innerText = 'Pos Keinginan kamu sudah melewati batas rasio. Yuk rem dulu jajan boba & nongkrongnya!';
+            } else if (totalRemaining < 0) {
+                healthBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-red-600 text-white';
+                healthBadge.innerText = 'Sangu Minus 🚨';
+                healthTitle.innerText = 'Aduh, Sangu Tekor! 😭';
+                healthDesc.innerText = 'Total pengeluaranmu sudah melebihi sangu bulanan. Evaluasi lagi transaksi yang gak penting ya!';
+            } else if (spentKeb <= limitKeb && spentKei <= limitKei) {
+                healthBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-emerald-400 text-slate-900';
+                healthBadge.innerText = 'Keuangan Sehat 😎';
+                healthTitle.innerText = 'Mantap, Remaja Bijak! 🚀';
+                healthDesc.innerText = 'Pengeluaran kamu masih terkendali rapi sesuai rasio. Pertahankan terus ya!';
+            }
+
+            // Update Gauges & Progress Bars
+            updateBar('Keb', 'statKebText', 'percentKeb', 'remKeb', spentKeb, limitKeb, 'Kebutuhan');
+            updateBar('Kei', 'statKeiText', 'percentKei', 'remKei', spentKei, limitKei, 'Keinginan');
+            updateBar('Tab', 'statTabText', 'percentTab', 'remTab', spentTab, limitTab, 'Tabungan');
+
+            // Render Wishlist items
+            renderWishlist(spentTab);
+
+            // Render Transactions Table
+            filterTransactions();
+
+            // Render Chart
+            renderChart(spentKeb, spentKei, spentTab);
+        }
+
+        function updateBar(barIdSuffix, textId, percentId, remId, spent, limit, typeName) {
+            const pct = limit > 0 ? Math.min(Math.round((spent / limit) * 100), 100) : 0;
+            const barEl = document.getElementById('bar' + barIdSuffix);
+            
+            if (!barEl) return;
+
+            barEl.style.width = `${pct}%`;
+            if (pct > 100) {
+                barEl.className = 'bg-red-500 h-full transition-all duration-500 rounded-full';
+            } else {
+                barEl.className = `${barIdSuffix === 'Keb' ? 'bg-blue-500' : barIdSuffix === 'Kei' ? 'bg-pink-500' : 'bg-emerald-500'} h-full transition-all duration-500 rounded-full`;
+            }
+
+            const textEl = document.getElementById(textId);
+            const percentEl = document.getElementById(percentId);
+            const remEl = document.getElementById(remId);
+
+            if (textEl) textEl.innerText = `${formatRupiah(spent)} / ${formatRupiah(limit)}`;
+            if (percentEl) percentEl.innerText = `${pct}% ${typeName === 'Tabungan' ? 'terkumpul' : 'terpakai'}`;
+            
+            const rem = limit - spent;
+            if (remEl) {
+                if (typeName === 'Tabungan') {
+                    remEl.innerText = `Total Tabungan: ${formatRupiah(spent)}`;
+                } else {
+                    remEl.innerText = rem >= 0 ? `Sisa: ${formatRupiah(rem)}` : `Over: ${formatRupiah(Math.abs(rem))}`;
+                }
+            }
+        }
+
+        function renderWishlist(currentSavingsTotal) {
+            const container = document.getElementById('wishlistContainer');
+            container.innerHTML = '';
+
+            if (state.wishlist.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-2 text-center py-6 text-slate-400 text-xs">
+                        Belum ada target impian. Klik "+ Tambah Target" untuk membuat wishlist!
+                    </div>
+                `;
+                return;
+            }
+
+            state.wishlist.forEach(item => {
+                const target = item.target || 1;
+                const pct = Math.min(Math.round((currentSavingsTotal / target) * 100), 100);
+
+                const card = document.createElement('div');
+                card.className = 'p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 flex flex-col justify-between';
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xl">${item.emoji || '🎯'}</span>
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-800 dark:text-slate-100">${item.name}</h4>
+                                    <p class="text-[11px] text-slate-400">Target: ${formatRupiah(item.target)}</p>
+                                </div>
+                            </div>
+                            <button onclick="deleteWishlist(${item.id})" class="text-slate-300 hover:text-red-500 text-xs p-1">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden mt-1">
+                            <div class="bg-gradient-to-r from-pink-500 to-indigo-500 h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center mt-2 text-[10px] font-semibold text-slate-500">
+                        <span>Progress: ${pct}%</span>
+                        <span class="${pct >= 100 ? 'text-emerald-500 font-bold' : 'text-indigo-500'}">
+                            ${pct >= 100 ? 'Tercapai! 🎉' : 'Nabung lagi! 🚀'}
+                        </span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterTransactions() {
+            const query = (document.getElementById('searchInput').value || '').toLowerCase();
+            const cat = document.getElementById('categoryFilter').value;
+            const tbody = document.getElementById('transactionTableBody');
+            const emptyState = document.getElementById('emptyTransactionState');
+
+            tbody.innerHTML = '';
+
+            const filtered = state.transactions.filter(t => {
+                const matchSearch = t.name.toLowerCase().includes(query) || t.payment.toLowerCase().includes(query);
+                const matchCat = cat === 'ALL' || t.category === cat;
+                return matchSearch && matchCat;
+            });
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                filtered.forEach(t => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-700/30 transition text-xs sm:text-sm';
+                    
+                    let badgeClass = 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300';
+                    if (t.category === 'KEINGINAN') badgeClass = 'bg-pink-100 dark:bg-pink-950 text-pink-700 dark:text-pink-300';
+                    if (t.category === 'TABUNGAN') badgeClass = 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300';
+
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 text-slate-500 dark:text-slate-400 whitespace-nowrap">${t.date}</td>
+                        <td class="py-3 px-4 font-semibold text-slate-800 dark:text-slate-200">${t.name}</td>
+                        <td class="py-3 px-4">
+                            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${badgeClass}">
+                                ${t.category}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-slate-500 dark:text-slate-400">${t.payment}</td>
+                        <td class="py-3 px-4 font-bold text-right text-slate-800 dark:text-slate-100">${formatRupiah(t.amount)}</td>
+                        <td class="py-3 px-4 text-center">
+                            <button onclick="deleteTransaction(${t.id})" class="text-slate-400 hover:text-red-500 p-1 transition" title="Hapus">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+        function renderChart(spentKeb = 0, spentKei = 0, spentTab = 0) {
+            const ctx = document.getElementById('budgetChart').getContext('2d');
+            const isDark = document.documentElement.classList.contains('dark');
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            const data = [spentKeb, spentKei, spentTab];
+            const hasData = data.some(v => v > 0);
+
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Kebutuhan', 'Keinginan', 'Tabungan'],
+                    datasets: [{
+                        data: hasData ? data : [1, 1, 1],
+                        backgroundColor: hasData ? ['#3b82f6', '#ec4899', '#10b981'] : ['#e2e8f0', '#cbd5e1', '#94a3b8'],
+                        borderWidth: 2,
+                        borderColor: isDark ? '#1e293b' : '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: isDark ? '#cbd5e1' : '#334155',
+                                font: { size: 11, family: 'Inter' },
+                                boxWidth: 12
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if (!hasData) return ' Belum ada data transaksi';
+                                    return ` ${context.label}: ${formatRupiah(context.raw)}`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        function saveAllowance() {
+            const val = Number(document.getElementById('monthlyAllowanceInput').value);
+            if (isNaN(val) || val < 0) {
+                showToast('Masukkan nominal sangu yang valid ya!', 'error');
+                return;
+            }
+            state.monthlyAllowance = val;
+            saveDataToStorage();
+            updateUI();
+            showToast('Sangu bulanan berhasil disimpan! 💰', 'success');
+        }
+
+        function handleSaveTransaction(e) {
+            e.preventDefault();
+            const name = document.getElementById('txName').value.trim();
+            const amount = Number(document.getElementById('txAmount').value);
+            const date = document.getElementById('txDate').value;
+            const category = document.getElementById('txCategory').value;
+            const payment = document.getElementById('txPayment').value;
+
+            if (!name || isNaN(amount) || amount <= 0 || !date) {
+                showToast('Lengkapi semua data transaksi!', 'error');
+                return;
+            }
+
+            const newTx = {
+                id: Date.now(),
+                name,
+                amount,
+                date,
+                category,
+                payment
+            };
+
+            state.transactions.unshift(newTx);
+            saveDataToStorage();
+            closeTransactionModal();
+            updateUI();
+            showToast('Transaksi berhasil dicatat! 📝', 'success');
+        }
+
+        function deleteTransaction(id) {
+            state.transactions = state.transactions.filter(t => t.id !== id);
+            saveDataToStorage();
+            updateUI();
+            showToast('Transaksi berhasil dihapus!', 'info');
+        }
+
+        function handleSaveWishlist(e) {
+            e.preventDefault();
+            const name = document.getElementById('wsName').value.trim();
+            const target = Number(document.getElementById('wsTarget').value);
+            const emoji = document.getElementById('wsEmoji').value;
+
+            if (!name || isNaN(target) || target <= 0) {
+                showToast('Lengkapi data wishlist impian!', 'error');
+                return;
+            }
+
+            const newItem = {
+                id: Date.now(),
+                name,
+                target,
+                emoji
+            };
+
+            state.wishlist.push(newItem);
+            saveDataToStorage();
+            closeWishlistModal();
+            updateUI();
+            showToast('Target impian ditambahkan! 🌟', 'success');
+        }
+
+        function deleteWishlist(id) {
+            state.wishlist = state.wishlist.filter(w => w.id !== id);
+            saveDataToStorage();
+            updateUI();
+            showToast('Target impian dihapus', 'info');
+        }
+
+        function applyRatioPreset() {
+            const selected = document.querySelector('input[name="ratioPreset"]:checked').value;
+            state.activePresetKey = selected;
+            saveDataToStorage();
+            toggleEditRatioModal();
+            updateUI();
+            showToast('Preset rasio berhasil diperbarui!', 'success');
+        }
+
+        function confirmResetData() {
+            if (window.confirm('Yakin ingin mereset seluruh data sangu dan transaksi kembali ke awal?')) {
+                loadDefaultInitialData();
+                updateUI();
+                showToast('Seluruh data berhasil direset!', 'info');
+            }
+        }
+
+        /* Modal toggle functions */
+        function openTransactionModal() {
+            document.getElementById('txDate').value = getFormattedToday();
+            document.getElementById('transactionModal').classList.remove('hidden');
+        }
+        function closeTransactionModal() {
+            document.getElementById('transactionModal').classList.add('hidden');
+            document.getElementById('transactionForm').reset();
+        }
+
+        function toggleEditRatioModal() {
+            const modal = document.getElementById('ratioModal');
+            if (modal.classList.contains('hidden')) {
+                const radios = document.getElementsByName('ratioPreset');
+                for (let r of radios) {
+                    if (r.value === state.activePresetKey) r.checked = true;
+                }
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function openWishlistModal() {
+            document.getElementById('wishlistModal').classList.remove('hidden');
+        }
+        function closeWishlistModal() {
+            document.getElementById('wishlistModal').classList.add('hidden');
+            document.getElementById('wishlistForm').reset();
+        }
+
+        /* Toast notification helper */
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let bg = 'bg-slate-800 text-white';
+            if (type === 'success') bg = 'bg-emerald-600 text-white';
+            if (type === 'error') bg = 'bg-red-600 text-white';
+            
+            toast.className = `px-4 py-2.5 rounded-xl text-xs font-semibold shadow-lg ${bg} flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0 pointer-events-auto`;
+            toast.innerHTML = `<span>${msg}</span>`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        window.onload = function() {
+            initTheme();
+            loadDataFromStorage();
+            updateUI();
+        };
+    </script>
 </body>
 </html>
